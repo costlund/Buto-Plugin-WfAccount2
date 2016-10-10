@@ -1,0 +1,33 @@
+url: _set_in_action_
+ajax: true
+submit_value: Sign in
+id: account_create
+items:
+  email:
+    type: varchar
+    lable: Email
+    mandatory: true
+    default: ''
+    validate_as_emailzzz: true
+    validator:
+      -
+        plugin: wf/form
+        method: validate_email
+  password:
+    type: password
+    lable: Password
+    mandatory: true
+    default: 
+  action:
+    type: hidden
+    lable: action
+    mandatory: true
+    default: 'signin'
+success_redirect: /page/home
+buttons:
+  -
+    type: a
+    innerHTML: Cancel
+    attribute:
+      href: '/'
+      class: 'btn btn-default'

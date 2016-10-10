@@ -1,0 +1,25 @@
+settings:
+  rewrite_globals:
+    -
+      key: 'sys/settings/form_lable'
+      value: Sign in
+    -
+      key: 'sys/settings/plugin/wf/form/enabled'
+      value: true
+  layout:
+    - html
+    - main
+  title: Account | Sign in
+content:
+  login_form:
+    type: div
+    innerHTML:
+      frm_login:
+        type: widget
+        data:
+          plugin: 'wf/form'
+          method: render
+          data: _handled_in_action_
+    
+
+  

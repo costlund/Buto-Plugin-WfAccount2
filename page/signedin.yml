@@ -1,0 +1,28 @@
+settings:
+  rewrite_globals:
+    -
+      key: 'sys/settings/form_lable'
+      value: Already signed in
+  layout:
+    - html
+    - main
+  title: Account
+content:
+  signin:
+    type: div
+    innerHTML:
+      text:
+        type: span
+        innerHTML: 'You are already signed in.'
+      start:
+        type: a
+        innerHTML: 'Go to start page!'
+        attribute:
+          href: '/'
+#      signout:
+#        type: a
+#        innerHTML: 'Sign out!'
+#        attribute:
+#          href: '/login/signout'
+
+  

@@ -1,0 +1,56 @@
+settings:
+  rewrite_globals:
+    -
+      key: 'sys/settings/plugin/wf/form/enabled'
+      value: true
+    -
+      key: 'sys/settings/form_lable'
+      value: Change email
+  layout:
+    - html
+    - main
+  title: Account | Email
+content:
+  login_form:
+    type: div
+    innerHTML:
+      current_email:
+        type: div
+        attribute:
+          class: 'form-group'
+          id: wf_account_current_email
+        innerHTML:
+          lable:
+            type: label
+            innerHTML: Current email
+          email:
+            type: div
+            innerHTML: 'globals:_SESSION/email'
+      frm_login:
+        type: widget
+        data:
+          plugin: 'wf/form'
+          method: render
+          data: _handled_in_action_
+  script:
+    type: script
+    innerHTML: 'PluginWfAccount2.sendmessage();'
+    settings:
+      disabled: true
+
+
+#  facebook:
+#    type: div
+#    settings:
+#      disabled: true
+#    attribute:
+#      style: 'margin-top:20px'
+#    innerHTML:
+#      button:
+#        type: a
+#        attribute:
+#          href: '_set_in_action_'
+#        innerHTML: Sign in with Facebook
+    
+
+  

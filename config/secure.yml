@@ -1,0 +1,10 @@
+client:
+  'email': false
+  'password': false
+unknown:
+  'signin': false
+  'create': false
+visitor:
+  'signout': false
+  'action': false
+  'sendmessage': false

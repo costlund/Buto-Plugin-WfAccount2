@@ -1,0 +1,38 @@
+settings:
+  path: 'container/innerHTML/containers/innerHTML/main/innerHTML/form/innerHTML'
+content:
+  style:
+    type: style
+    innerHTML: '.wf_form_row{margin-top:10px;}'
+  container:
+    type: div
+    attribute:
+      class: 'container'
+      style: 'margin-top: 20px; widthzzz: 400px;'
+    innerHTML:
+      ghost1:
+        type: div
+        attribute:
+          class: col-md-4
+      containers:
+        type: div
+        attribute:
+          class: col-md-4
+        innerHTML:
+          main:
+            type: div
+            attribute:
+              class: 'panel panel-default'
+            innerHTML:
+              heading:
+                type: div
+                attribute:
+                  class: 'panel-heading'
+                innerHTMLzzz: 'Account'
+                innerHTML: 'globals:sys/settings/form_lable'
+              form:
+                type: div
+                attribute:
+                  class: 'panel-body'
+                innerHTML:
+      

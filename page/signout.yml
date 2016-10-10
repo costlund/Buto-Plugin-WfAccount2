@@ -1,0 +1,44 @@
+settings:
+  layout:
+    - html
+    - main
+  title: Sign out
+content:
+  sign_out:
+    type: div
+    innerHTML: 'You are signed out!'
+    
+  ul:
+    type: ul
+    attribute:
+      class: list-group
+    innerHTML:
+      startpage:
+        type: li
+        attribute:
+          class: 'list-group-item'
+        innerHTML:
+          link:
+            type: a
+            innerHTML: Start page
+            attribute:
+              id: btn_startpage
+              href: '/'
+#      loginpage:
+#        type: li
+#        attribute:
+#          class: 'list-group-item'
+#        innerHTML:
+#          link:
+#            type: a
+#            innerHTML: Login again
+#            attribute:
+#              href: '/[class]/form'
+  script:
+    type: script
+    settings:
+      disabled: false
+    innerHTML: "location.href='/';"
+ 
+
+  

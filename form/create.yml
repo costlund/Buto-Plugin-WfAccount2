@@ -1,0 +1,46 @@
+url: _set_in_action_
+post_to_divzzzzz: 'sdfds'
+ajax: true
+submit_value: Create
+id: account_create
+items:
+  email:
+    type: varchar
+    lable: Email
+    mandatory: true
+    default: ''
+    validate_as_emailzzz: true
+    container_classzzz: row
+    validator:
+      -
+        plugin: wf/form
+        method: validate_email
+  password:
+    type: password
+    lable: Password
+    mandatory: true
+    default: 
+    container_classzzz: row
+    validator:
+      -
+        plugin: wf/form
+        method: validate_password
+  key:
+    type: varchar
+    lable: 'Key*'
+    mandatory: false
+    default: ''
+    container_style: 'display:none;'
+  action:
+    type: hidden
+    lable: action
+    mandatory: true
+    default: 'create'
+success_redirect: /page/home
+buttons:
+  -
+    type: a
+    innerHTML: Cancel
+    attribute:
+      href: '/'
+      class: 'btn btn-default'
