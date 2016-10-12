@@ -222,7 +222,7 @@ class PluginWfAccount2{
             $script->set(true, "location.href='/'");
             $json->set('success', true);
             $json->set('script', $script->get());
-            $this->sign_in($user_id, $users->get());
+            $this->sign_in($user_id, $users->get(), $settings);
           }
         }
       }
@@ -241,7 +241,7 @@ class PluginWfAccount2{
               $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".__('User is not activated!')."');"));
             }else{
               $json->set('success', true);
-              $this->sign_in($user_id, $users->get());
+              $this->sign_in($user_id, $users->get(), $settings);
               $json->set('script', array("location.href='/';"));
             }
           }else{
@@ -417,17 +417,32 @@ class PluginWfAccount2{
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/login/layout');
     wfDocument::mergeLayout($page);
   }
-  private function sign_in($key, $users){
+  private function sign_in($key, $users, $settings){
     wfPlugin::includeonce('wf/array');
     $user = new PluginWfArray($users[$key]);
     $_SESSION['secure']=true;
     $_SESSION['email']=$user->get('email');
     $_SESSION['user_id']=$key;
-    $_SESSION['role'] = $user->get('role');
+    $_SESSION['role'] = $this->get_roles($key, $settings);
     if($user->get('theme')){
       $_SESSION['theme'] = $user->get('theme');
     }
   }
+  /**
+   * Get user roles from db.
+   * @param type $key
+   * @param type $settings
+   * @return type
+   */
+  private function get_roles($key, $settings){
+    $role = $this->runSQL($settings, "select role from account_role where account_id='$key';");
+    $temp = array();
+    foreach ($role->get() as $key2 => $value2) {
+      $temp[] = $value2['role'];
+    }
+    return $temp;
+  }
+  
   public function validate_current_password($field, $form){
     // If field is valid we check if password match user.
     if(wfArray::get($form, "items/$field/is_valid")){
