@@ -62,7 +62,15 @@ CREATE TABLE `account_log` (
   PRIMARY KEY  (`id`),
   KEY `account_id` (`account_id`),
   CONSTRAINT `account_log_ibfk_2` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+CREATE TABLE `account_role` (
+  `id` int(16) NOT NULL auto_increment,
+  `account_id` varchar(50) default NULL,
+  `role` varchar(50) default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `account_id` (`account_id`),
+  CONSTRAINT `account_role_ibfk_2` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 </pre>
 */
 class PluginWfAccount2{
