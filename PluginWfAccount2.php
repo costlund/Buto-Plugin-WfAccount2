@@ -166,28 +166,16 @@ class PluginWfAccount2{
         if(!$user_id){
           // Create account.
           $user_id = wfCrypt::getUid();
-//          wfPlugin::includeonce('wf/mysql');
-//          $mysql = new PluginWfMysql();
-//          $mysql->open($settings->get('mysql'));
-//          $mysql->runSql("insert into account (id, email, password) values ('$user_id', '".$form->get('items/email/post_value')."', '".wfCrypt::getHashAndSaltAsString($form->get('items/password/post_value'))."');");
           $this->runSQL($settings, "insert into account (id, email, password) values ('$user_id', '".$form->get('items/email/post_value')."', '".wfCrypt::getHashAndSaltAsString($form->get('items/password/post_value'))."');");
-          
           $this->log(null, 'create', $user_id);
+          wfEvent::run('account_create');
         }else{
           $this->runSQL($settings, "update account set activate_password='".wfCrypt::getHashAndSaltAsString($form->get('items/password/post_value'))."' where id='$user_id';");
           $this->runSQL($settings, "update account set activate_date='".date('Y-m-d H:i:s')."' where id='$user_id';");
           $this->log(null, 'recreate', $user_id);
+          wfEvent::run('account_recreate');
         }
-        
-        
-//        wfPlugin::includeonce('wf/mysql');
-//        $mysql = new PluginWfMysql();
-//        $mysql->open($settings->get('mysql'));
-//        $mysql->runSql("update account set activate_key='".$activate_key."' where id='$user_id';");
         $this->runSQL($settings, "update account set activate_key='".$activate_key."' where id='$user_id';");
-        
-        
-        
         // Script
         $script->set(true, 'document.getElementById(\'div_account_create_email\').style.display=\'none\'');
         $script->set(true, 'document.getElementById(\'div_account_create_password\').style.display=\'none\'');
@@ -230,6 +218,7 @@ class PluginWfAccount2{
             $script->set(true, "location.href='/'");
             $json->set('success', true);
             $json->set('script', $script->get());
+            wfEvent::run('account_activate');
             $this->sign_in($user_id, $users->get(), $settings);
           }
         }
@@ -416,6 +405,7 @@ class PluginWfAccount2{
   User will immediately be signed out when they load this page.
   */
   public function page_signout(){
+    wfEvent::run('signout');
     session_destroy();
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/signout.yml';
     $page = wfFilesystem::loadYml($filename);
@@ -435,6 +425,7 @@ class PluginWfAccount2{
     if($user->get('theme')){
       $_SESSION['theme'] = $user->get('theme');
     }
+    wfEvent::run('signin');
   }
   /**
    * Get user roles from db.
