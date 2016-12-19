@@ -417,7 +417,18 @@ class PluginWfAccount2{
   */
   public function page_signout(){
     wfEvent::run('signout');
+    /**
+     * If we got the theme session we preserve it.
+     */
+    $theme = wfArray::get($_SESSION, 'theme');
     session_destroy();
+    if($theme){
+      /**
+       * If theme is set we start a new session with it.
+       */
+      session_start();
+      $_SESSION['theme'] = $theme;
+    }
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/signout.yml';
     $page = wfFilesystem::loadYml($filename);
     if(wfRequest::get('auto')){
