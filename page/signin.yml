@@ -20,6 +20,9 @@ content:
           plugin: 'wf/form'
           method: render
           data: _handled_in_action_
-    
+  move_save_button:
+    type: script
+    innerHTML: |
+      document.getElementById('account_signin_footer').appendChild(document.getElementById('account_create_save'));
 
   
