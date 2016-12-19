@@ -109,15 +109,26 @@ class PluginWfAccount2{
   }
   
   public function page_signin(){
+    $ajax = false;
+    if(wfRequest::get('_time')){
+      $ajax = true;
+    }
     wfPlugin::includeonce('wf/array');
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'signin');
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/signin.yml';
     $page = wfFilesystem::loadYml($filename);
-    $form = wfFilesystem::loadYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/signin.yml');
-    $form['url'] = '/'.wfArray::get($GLOBALS, 'sys/class').'/action';
-    $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form);
+    if(!$ajax){
+      unset($page['content']['move_save_button']);
+    }
+    wfPlugin::includeonce('wf/yml');
+    $form = new PluginWfYml('/plugin/wf/account2/form/signin.yml');
+    $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
+    if($ajax){
+      $form->setUnset('buttons/btn_cancel');
+    }
+    $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);
   }  
   public function page_email(){
@@ -454,5 +465,12 @@ class PluginWfAccount2{
       }
     }
     return $form;
+  }
+  /**
+   * If call signin page via ajax one has to include script.
+   */
+  public static function widget_include(){
+    $element = wfDocument::createHtmlElement('script', null, array('src' => '/plugin/wf/account2/include.js?x=2'));
+    wfDocument::renderElement(array($element));
   }
 }
