@@ -15,6 +15,8 @@ plugin_modules:
   account:
     plugin: 'wf/account2'
     settings:
+      on_signin:
+        script: "location.href='/some/page';" 
       allow:
         signin: true
         registration: true
@@ -250,7 +252,11 @@ class PluginWfAccount2{
             }else{
               $json->set('success', true);
               $this->sign_in($user_id, $users->get(), $settings);
-              $json->set('script', array("location.href='/';"));
+              if($settings->get('on_signin/script')){
+                $json->set('script', array($settings->get('on_signin/script')));
+              }else{
+                $json->set('script', array("location.href='/';"));
+              }
             }
           }else{
             $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".__('Username or password does not match!')."');"));
