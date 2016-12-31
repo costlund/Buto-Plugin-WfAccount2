@@ -5,22 +5,21 @@ id: account_create
 items:
   email:
     type: varchar
-    lable: Email
+    label: Email
     mandatory: true
     default: ''
-    validate_as_emailzzz: true
     validator:
       -
-        plugin: wf/form
+        plugin: wf/form_v2
         method: validate_email
   password:
     type: password
-    lable: Password
+    label: Password
     mandatory: true
     default: 
   action:
     type: hidden
-    lable: action
+    label: action
     mandatory: true
     default: 'signin'
 success_redirect: /page/home
