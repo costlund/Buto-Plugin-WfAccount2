@@ -6,7 +6,7 @@ id: account_email
 items:
   new_email:
     type: varchar
-    lable: New email
+    label: New email
     mandatory: true
     default: ''
     validate_as_emailzzz: true
@@ -17,12 +17,12 @@ items:
         method: validate_email
   password:
     type: password
-    lable: Password
+    label: Password
     mandatory: true
     default: 
   key:
     type: varchar
-    lable: 'Key*'
+    label: 'Key*'
     mandatory: false
     default: ''
     container_style: 'display:none;'
@@ -32,7 +32,7 @@ items:
         method: validate_equal
   action:
     type: hidden
-    lable: action
+    label: action
     mandatory: true
     default: 'email'
 success_redirect: /page/home

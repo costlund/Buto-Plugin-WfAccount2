@@ -29,7 +29,7 @@ content:
       frm_login:
         type: widget
         data:
-          plugin: 'wf/form'
+          plugin: 'wf/form_v2'
           method: render
           data: _handled_in_action_
   script:
@@ -37,20 +37,8 @@ content:
     innerHTML: 'PluginWfAccount2.sendmessage();'
     settings:
       disabled: true
-
-
-#  facebook:
-#    type: div
-#    settings:
-#      disabled: true
-#    attribute:
-#      style: 'margin-top:20px'
-#    innerHTML:
-#      button:
-#        type: a
-#        attribute:
-#          href: '_set_in_action_'
-#        innerHTML: Sign in with Facebook
-    
-
+  script_move_element:
+    type: script
+    innerHTML: |
+      PluginWfBootstrapjs.moveElement('account_email', 'modal_account_email_footer', 'btn');
   
