@@ -6,7 +6,7 @@ id: account_create
 items:
   email:
     type: varchar
-    lable: Email
+    label: Email
     mandatory: true
     default: ''
     validate_as_emailzzz: true
@@ -17,7 +17,7 @@ items:
         method: validate_email
   password:
     type: password
-    lable: Password
+    label: Password
     mandatory: true
     default: 
     container_classzzz: row
@@ -27,13 +27,13 @@ items:
         method: validate_password
   key:
     type: varchar
-    lable: 'Key*'
+    label: 'Key*'
     mandatory: false
     default: ''
     container_style: 'display:none;'
   action:
     type: hidden
-    lable: action
+    label: action
     mandatory: true
     default: 'create'
 success_redirect: /page/home

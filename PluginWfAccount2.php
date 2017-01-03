@@ -76,16 +76,17 @@ CREATE TABLE `account_role` (
 </pre>
 */
 class PluginWfAccount2{
+  private $ajax = false;
+  
   /**
   Page with a create form.  
   */
   public function page_create(){
+    $this->init_page();
     wfPlugin::includeonce('wf/array');
     wfPlugin::includeonce('wf/yml');
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
-    
     $this->checkAllow($settings, 'registration');
-    
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     if(wfUser::isSecure()){
       $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/signedin.yml';
@@ -96,53 +97,65 @@ class PluginWfAccount2{
     }else{
       $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/create.yml';
       $page = wfFilesystem::loadYml($filename);
-      $form = wfFilesystem::loadYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/create.yml');
-      $form['url'] = '/'.wfArray::get($GLOBALS, 'sys/class').'/action';
-      $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form);
+      $form = new PluginWfYml('/plugin/wf/account2/form/create.yml');
+      $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
+      if(!$this->ajax){
+        unset($page['content']['script_move_element']);
+      }else{
+        $form->setUnset('buttons');
+      }
+      $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
       wfDocument::mergeLayout($page);
       return null;
     }
   }
-  
   private function checkAllow($settings, $type){
     if(!$settings->get('allow/'.$type)){
       exit("Param settings/allow/$type must exist and be true!");
     }
   }
+  private function init_page(){
+    if(wfRequest::get('_time')){
+      $this->ajax = true;
+    }
+  }
   
   public function page_signin(){
-    $ajax = false;
-    if(wfRequest::get('_time')){
-      $ajax = true;
-    }
+    $this->init_page();
     wfPlugin::includeonce('wf/array');
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'signin');
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/signin.yml';
     $page = wfFilesystem::loadYml($filename);
-    if(!$ajax){
-      unset($page['content']['move_save_button']);
-    }
     wfPlugin::includeonce('wf/yml');
     $form = new PluginWfYml('/plugin/wf/account2/form/signin.yml');
     $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
-    if($ajax){
+    if(!$this->ajax){
+      unset($page['content']['script_move_element']);
+    }else{
       $form->setUnset('buttons/btn_cancel');
     }
     $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);
   }  
   public function page_email(){
+    $this->init_page();
     wfPlugin::includeonce('wf/array');
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'change_email');
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/email.yml';
     $page = wfFilesystem::loadYml($filename);
-    $form = wfFilesystem::loadYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/email.yml');
-    $form['url'] = '/'.wfArray::get($GLOBALS, 'sys/class').'/action';
-    $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form);
+    wfPlugin::includeonce('wf/yml');
+    $form = new PluginWfYml('/plugin/wf/account2/form/email.yml');
+    $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
+    if(!$this->ajax){
+      unset($page['content']['script_move_element']);
+    }else{
+      $form->setUnset('buttons');
+    }
+    $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);
   }
   public function page_action(){
@@ -257,7 +270,11 @@ class PluginWfAccount2{
             }else{
               $json->set('success', true);
               $this->sign_in($user_id, $users->get(), $settings);
-              $json->set('script', array("location.href='/';"));
+              if($settings->get('on_signin/script')){
+                $json->set('script', array($settings->get('on_signin/script')));
+              }else{
+                $json->set('script', array("location.href='/';"));
+              }              
             }
           }else{
             $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".$i18n->translateFromTheme('Username or password does not match!')."');"));
@@ -312,8 +329,13 @@ class PluginWfAccount2{
         $this->runSQL($settings, "update account set change_email_email=null where id='".wfArray::get($_SESSION, 'user_id')."';");
         $this->runSQL($settings, "update account set change_email_key=null where id='".wfArray::get($_SESSION, 'user_id')."';");
         $this->runSQL($settings, "update account set change_email_date=null where id='".wfArray::get($_SESSION, 'user_id')."';");
-        $script->set(true, "location.href='/'");
-        $json->set('script', $script->get());
+        //$script->set(true, "location.href='/'");
+        //$json->set('script', $script->get());
+        if($settings->get('on_signin/script')){
+          $json->set('script', array($settings->get('on_signin/script')));
+        }else{
+          $json->set('script', array("location.href='/';"));
+        }              
       }
     }elseif($action=='password' && wfUser::isSecure()){
       $this->checkAllow($settings, 'change_password');
@@ -321,8 +343,11 @@ class PluginWfAccount2{
       if(!$form->get('is_valid')){
         $json->set('script', array("PluginWfAccount2.saveForm('account_password_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
       }else{
-        $script->set(true, "location.href='/'");
-        $json->set('script', $script->get());
+        if($settings->get('on_signin/script')){
+          $json->set('script', array($settings->get('on_signin/script')));
+        }else{
+          $json->set('script', array("location.href='/';"));
+        }              
         $this->runSQL($settings, "update account set password='".wfCrypt::getHashAndSaltAsString( $form->get('items/new_password/post_value'))."' where id='".wfArray::get($_SESSION, 'user_id')."';");
       }
     }
@@ -387,7 +412,7 @@ class PluginWfAccount2{
   }
   /**
    * Send message if params To and Body is set in session.
-   */  
+   */
   public function page_sendmessage(){
     wfPlugin::includeonce('wf/yml');
     wfPlugin::includeonce('wf/array');
@@ -395,11 +420,17 @@ class PluginWfAccount2{
     $json->set('success', false);
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     if(wfArray::get($_SESSION, 'plugin/wf/account/send_email/To') && wfArray::get($_SESSION, 'plugin/wf/account/send_email/Body')){
-      $settings->set('phpmailer/To', wfArray::get($_SESSION, 'plugin/wf/account/send_email/To'));
-      $settings->set('phpmailer/Body', wfArray::get($_SESSION, 'plugin/wf/account/send_email/Body'));
+      $phpmailer_settings = $settings->get('phpmailer');
+      if(is_null($phpmailer_settings)){
+        throw new Exception('Error in PluginWfAccount2::page_sendmessage, param phpmailer is not set.');
+      }
+      $phpmailer_settings = wfSettings::getSettingsFromYmlString($phpmailer_settings);
+      $phpmailer_settings = new PluginWfArray($phpmailer_settings);
+      $phpmailer_settings->set('To', wfArray::get($_SESSION, 'plugin/wf/account/send_email/To'));
+      $phpmailer_settings->set('Body', wfArray::get($_SESSION, 'plugin/wf/account/send_email/Body'));
       wfPlugin::includeonce('wf/phpmailer');
       $wf_phpmailer = new PluginWfPhpmailer();
-      $wf_phpmailer->send($settings->get('phpmailer'));
+      $wf_phpmailer->send($phpmailer_settings->get());
       $_SESSION = wfArray::setUnset($_SESSION, 'plugin/wf/account/send_email');
       $json->set('success', true);
     }else{
@@ -408,15 +439,26 @@ class PluginWfAccount2{
     exit(json_encode($json->get()));
   }
   public function page_password(){
+    $this->init_page();
     wfPlugin::includeonce('wf/array');
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'change_password');
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/password.yml';
     $page = wfFilesystem::loadYml($filename);
-    $form = wfFilesystem::loadYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/password.yml');
-    $form['url'] = '/'.wfArray::get($GLOBALS, 'sys/class').'/action';
-    $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form);
+//    $form = wfFilesystem::loadYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/password.yml');
+//    $form['url'] = '/'.wfArray::get($GLOBALS, 'sys/class').'/action';
+    wfPlugin::includeonce('wf/yml');
+    $form = new PluginWfYml('/plugin/wf/account2/form/password.yml');
+    $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
+    
+    if(!$this->ajax){
+      unset($page['content']['script_move_element']);
+    }else{
+      $form->setUnset('buttons');
+    }
+    
+    $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);
   }
   /**
@@ -478,6 +520,8 @@ class PluginWfAccount2{
       $settings = new PluginWfArray(wfPlugin::getModuleSettings());
       $users = $this->getUsers($settings);
       if(!$this->validatePassword($users->get(wfArray::get($_SESSION, 'user_id').'/password'), wfArray::get($form, "items/$field/post_value"))){
+        wfPlugin::includeonce('wf/i18n');
+        $i18n = new PluginWfI18n();
         $form = wfArray::set($form, "items/$field/is_valid", false);
         $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('Password does not match!'));
       }
