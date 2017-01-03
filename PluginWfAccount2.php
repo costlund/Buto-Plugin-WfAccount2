@@ -135,6 +135,7 @@ class PluginWfAccount2{
       unset($page['content']['script_move_element']);
     }else{
       $form->setUnset('buttons/btn_cancel');
+      $page['content']['script_move_element']['innerHTML'] = "PluginWfBootstrapjs.moveModalButtons('".$form->get('id')."');";
     }
     $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);

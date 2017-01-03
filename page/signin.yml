@@ -23,6 +23,6 @@ content:
   script_move_element:
     type: script
     innerHTML: |
-      PluginWfBootstrapjs.moveElement('account_create', 'modal_account_signin_footer', 'btn');
+      PluginWfBootstrapjs.moveModalButtons('account_create');
 
   
