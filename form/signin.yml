@@ -17,6 +17,21 @@ items:
     label: Password
     mandatory: true
     default: 
+  two_factor_authentication:
+    type: hidden
+    label: Two-factor authentication
+    mandatory: false
+    option:
+      '': ''
+      'email': Email
+      'phone': Phone
+    info:
+      text: 'Select where you want the key to be sent.'
+  two_factor_authentication_key:
+    type: varchar
+    label: Verification key
+    info:
+      text: 'Check for the verification key who was sent to you.'
   action:
     type: hidden
     label: action

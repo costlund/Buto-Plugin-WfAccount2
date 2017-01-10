@@ -46,6 +46,15 @@ tables:
       change_email_date: 
         type: datetime
         default: 'null'
+      phone:
+        type: varchar(255)
+        default: 'null'
+      two_factor_authentication_key: 
+        type: varchar(50)
+        default: 'null'
+      two_factor_authentication_date: 
+        type: datetime
+        default: 'null'
 #CREATE TABLE `account_log` (
 #  `id` int(16) NOT NULL auto_increment,
 #  `account_id` varchar(50) default NULL,

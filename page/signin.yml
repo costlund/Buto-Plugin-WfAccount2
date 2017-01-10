@@ -20,9 +20,13 @@ content:
           plugin: 'wf/form_v2'
           method: render
           data: _handled_in_action_
-  script_move_element:
+#  script_move_element:
+#    type: script
+#    innerHTML: |
+#      PluginWfBootstrapjs.moveModalButtons('account_create');
+  script:
     type: script
-    innerHTML: |
-      PluginWfBootstrapjs.moveModalButtons('account_create');
+    innerHTML: "if(document.getElementById('div_account_create_two_factor_authentication_key')){document.getElementById('div_account_create_two_factor_authentication_key').style.display='none';}"
+      
 
   
