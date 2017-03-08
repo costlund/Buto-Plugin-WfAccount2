@@ -7,6 +7,9 @@ settings:
     -
       key: 'sys/settings/plugin/wf/callbackjson/enabled'
       value: true
+    -
+      key: 'sys/settings/plugin/wf/form_v2/enabled'
+      value: true
 content:
   doctype:
     type: text
