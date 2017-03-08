@@ -11,6 +11,9 @@ settings:
     - main
   title: Account | Sign in
 content:
+  flash:
+    type: div
+    innerHTML: ''
   login_form:
     type: div
     innerHTML:
