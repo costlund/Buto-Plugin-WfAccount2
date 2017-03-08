@@ -145,6 +145,8 @@ class PluginWfAccount2{
     if($settings->get('allow/two_factor_authentication')){
       $form->set('items/two_factor_authentication/type', 'varchar');
       $form->set('items/two_factor_authentication/mandatory', true);
+    }else{
+      $form->set('items/two_factor_authentication/container_style', 'display:none;');
     }
     /**
      * Cancel button.
