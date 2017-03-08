@@ -45,3 +45,7 @@ buttons:
     attribute:
       href: '/'
       class: 'btn btn-default'
+elements_below:
+  -
+    type: script
+    innerHTML: "document.getElementById('account_create_email').focus();"

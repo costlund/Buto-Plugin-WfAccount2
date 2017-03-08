@@ -128,6 +128,11 @@ class PluginWfAccount2{
     }
   }
   
+  /**
+   * 
+   * Set flash in sessin if needed.
+   * $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account2/flash', array(wfDocument::createHtmlElement('div', 'My sign in message.', array('class' => 'alert alert-info'))));
+   */
   public function page_signin(){
     $this->init_page();
     wfPlugin::includeonce('wf/array');
@@ -146,7 +151,7 @@ class PluginWfAccount2{
       $form->set('items/two_factor_authentication/type', 'varchar');
       $form->set('items/two_factor_authentication/mandatory', true);
     }else{
-      $form->set('items/two_factor_authentication/container_style', 'display:none;');
+      $form->set('items/two_factor_authentication/container_style', 'display:none;');      
     }
     /**
      * Cancel button.
@@ -159,6 +164,12 @@ class PluginWfAccount2{
      * 
      */
     $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
+    /**
+     * Flash.
+     */
+    if(wfPlugin::flashHas('wf/account2', 'signin')){
+      $page = wfArray::set($page, 'content/flash/innerHTML', wfPlugin::flashGet('wf/account2', 'signin'));
+    }
     wfDocument::mergeLayout($page);
   }  
   public function page_email(){
@@ -340,7 +351,24 @@ class PluginWfAccount2{
                   $script->set(true, "document.getElementById('div_account_create_two_factor_authentication_key').style.display='';");
                   $script->set(true, "document.getElementById('account_create_action').value='two_factor_authentication';");
                   $script->set(true, "document.getElementById('account_create_save').innerHTML='".$i18n->translateFromTheme('Verify')."';");
-                  $script->set(true, 'PluginWfAccount2.sendmessage("'.wfArray::get($GLOBALS, 'sys/class').'");');
+                  if(!wfHelp::isLocalhost()){
+                    /**
+                     * Send message if not in development mode.
+                     */
+                    $script->set(true, 'PluginWfAccount2.sendmessage("'.wfArray::get($GLOBALS, 'sys/class').'");');
+                    /**
+                     * Set session.
+                     */
+                    if($form->get('items/two_factor_authentication/post_value')=='email'){
+                      $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $users->get($user_id.'/email'));
+                      $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $i18n->translateFromTheme('Key to sign in is:').' '.$get_key);
+                      $this->log('two_factor_authentication_email', $user_id);
+                    }elseif($form->get('items/two_factor_authentication/post_value')=='phone'){
+                      $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_sms/To',   $users->get($user_id.'/phone'));
+                      $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_sms/Body', $i18n->translateFromTheme('Key to sign in is:').' '.$get_key);
+                      $this->log('two_factor_authentication_phone', $user_id);
+                    }
+                  }
                   $script->set(true, 'PluginWfAccount2.saveForm("account_create_save", "'.$i18n->translateFromTheme('An authentication key sent to you!').'", true);');
                   if(wfHelp::isLocalhost()){
                     /**
@@ -348,20 +376,9 @@ class PluginWfAccount2{
                      */
                     $script->set(true, "document.getElementById('account_create_two_factor_authentication_key').value='$get_key';");
                   }
+                  $script->set(true, "document.getElementById('account_create_two_factor_authentication_key').focus();");
                   $json->set('success', true);
                   $json->set('script', $script->get());
-                  /**
-                   * Set session.
-                   */
-                  if($form->get('items/two_factor_authentication/post_value')=='email'){
-                    $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $users->get($user_id.'/email'));
-                    $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', 'Key to sign in is: '.$get_key);
-                    $this->log('two_factor_authentication_email', $user_id);
-                  }elseif($form->get('items/two_factor_authentication/post_value')=='phone'){
-                    $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_sms/To',   $users->get($user_id.'/phone'));
-                    $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_sms/Body', 'Key to sign in is: '.$get_key);
-                    $this->log('two_factor_authentication_phone', $user_id);
-                  }
                 }
               }
             }
@@ -377,14 +394,11 @@ class PluginWfAccount2{
       if($user_id){
         if($this->validatePassword($users->get($user_id.'/password'), $form->get('items/password/post_value')) && $users->get($user_id.'/activated')){
           $user = $this->getUser($settings, $user_id);
-          
           /**
            * Check key timout.
            */
           $key_timeout = $settings->get('two_factor_authentication/key_timeout');
-          $seconds = wfDate::diff('s', $user->get('two_factor_authentication_date'), date('Y-m-d H:i:s'));            
-          $script->set(true, "console.log('$seconds');");
-            
+          $seconds = round((strtotime(date('Y-m-d H:i:s')) - strtotime($user->get('two_factor_authentication_date'))));
           if($user->get('two_factor_authentication_key') != $form->get('items/two_factor_authentication_key/post_value')){
             /**
              * Key mismatch.
@@ -643,7 +657,7 @@ class PluginWfAccount2{
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/login/layout');
     wfDocument::mergeLayout($page);
   }
-  private function sign_in($key, $users, $settings){
+  public function sign_in($key, $users, $settings){
     wfPlugin::includeonce('wf/array');
     $user = new PluginWfArray($users[$key]);
     $_SESSION['secure']=true;
