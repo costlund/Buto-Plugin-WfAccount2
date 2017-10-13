@@ -45,7 +45,7 @@ plugin_modules:
         Host: smtp.gmail.com
         From: buto.noreply@gmail.com
         FromName: 'PluginWfAccount2'
-        To: claes@webforms.se
+        To: me@world.com
         Subject: 'Action of PluginWfAccount2'
         Body: Body.
         WordWrap: '255'
