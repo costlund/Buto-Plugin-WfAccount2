@@ -85,7 +85,11 @@ CREATE TABLE `account_role` (
 */
 class PluginWfAccount2{
   private $ajax = false;
-  
+  function __construct($buto = false) {
+    if($buto){
+      $GLOBALS['sys']['settings']['plugin']['wf']['form_v2']['enabled'] = 'true';
+    }
+  }
   /**
   Page with a create form.  
   */
