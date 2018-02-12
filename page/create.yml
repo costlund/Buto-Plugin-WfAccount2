@@ -34,7 +34,7 @@ content:
             type: span
             attribute:
               id: i18n_Sign_in
-              class: i18n
+              class: hide
             innerHTML: Sign in
           -
             type: a
@@ -42,9 +42,9 @@ content:
               id: btn_goto_signin
               onclick: |
                 $('.modal').modal('hide'); 
-                var innerHTML = this.innerHTML;
+                var innerHTML = document.getElementById('i18n_Sign_in').innerHTML;
                 setTimeout(function(){
-                  PluginWfBootstrapjs.modal({id: 'modal_account_signin', url: '/account/signin', lable: document.getElementById('i18n_Sign_in').innerHTML, size: 'sm'});
+                  PluginWfBootstrapjs.modal({id: 'modal_account_signin', url: '/account/signin', lable: innerHTML, size: 'sm'});
                 }, 500, innerHTML);
             innerHTML: I already have an account
 
