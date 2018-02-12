@@ -37,8 +37,4 @@ content:
     innerHTML: 'PluginWfAccount2.sendmessage();'
     settings:
       disabled: true
-  script_move_element:
-    type: script
-    innerHTML: |
-      PluginWfBootstrapjs.moveElement('account_email', 'modal_account_email_footer', 'btn');
   

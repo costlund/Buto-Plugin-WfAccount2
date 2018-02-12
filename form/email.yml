@@ -1,16 +1,13 @@
 url: _set_in_action_
-post_to_divzzzzz: 'sdfds'
 ajax: true
 submit_value: Change
-id: account_email
+id: frm_account
 items:
   new_email:
     type: varchar
     label: New email
     mandatory: true
     default: ''
-    validate_as_emailzzz: true
-    container_classzzz: row
     validator:
       -
         plugin: wf/form

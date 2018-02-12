@@ -1,7 +1,7 @@
 url: _set_in_action_
 ajax: true
 submit_value: Sign in
-id: account_create
+id: frm_account
 items:
   email:
     type: varchar
@@ -48,4 +48,4 @@ buttons:
 elements_below:
   -
     type: script
-    innerHTML: "document.getElementById('account_create_email').focus();"
+    innerHTML: "document.getElementById('frm_account_email').focus();"

@@ -1,17 +1,4 @@
 tables:
-#CREATE TABLE `account` (
-#  `id` varchar(50) NOT NULL default '',
-#  `email` varchar(255) default NULL,
-#  `password` varchar(255) default NULL,
-#  `activated` int(11) default NULL,
-#  `activate_key` varchar(50) default NULL,
-#  `activate_password` varchar(255) default NULL,
-#  `activate_date` datetime default NULL,
-#  `change_email_email` varchar(255) default NULL,
-#  `change_email_key` varchar(50) default NULL,
-#  `change_email_date` datetime default NULL,
-#  PRIMARY KEY  (`id`)
-#) ENGINE=InnoDB DEFAULT CHARSET=latin1;        
   account:
     _description: Account.
     field:
@@ -58,15 +45,6 @@ tables:
       cert_id:
         type: varchar(255)
         default: 'null'
-#CREATE TABLE `account_log` (
-#  `id` int(16) NOT NULL auto_increment,
-#  `account_id` varchar(50) default NULL,
-#  `type` varchar(50) default NULL,
-#  `date` datetime default NULL,
-#  PRIMARY KEY  (`id`),
-#  KEY `account_id` (`account_id`),
-#  CONSTRAINT `account_log_ibfk_2` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-#) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;        
   account_log:
     _description: Account log.
     field:
@@ -89,15 +67,6 @@ tables:
       date:
         type: datetime
         default: 'null'
-
-#CREATE TABLE `account_role` (
-#  `id` int(16) NOT NULL auto_increment,
-#  `account_id` varchar(50) default NULL,
-#  `role` varchar(50) default NULL,
-#  PRIMARY KEY  (`id`),
-#  KEY `account_id` (`account_id`),
-#  CONSTRAINT `account_role_ibfk_2` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-#) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
   account_role:
     _description: Account roles.
     field:

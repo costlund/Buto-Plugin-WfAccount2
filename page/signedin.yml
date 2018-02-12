@@ -19,10 +19,5 @@ content:
         innerHTML: 'Go to start page!'
         attribute:
           href: '/'
-#      signout:
-#        type: a
-#        innerHTML: 'Sign out!'
-#        attribute:
-#          href: '/login/signout'
 
   

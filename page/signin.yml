@@ -23,13 +23,35 @@ content:
           plugin: 'wf/form_v2'
           method: render
           data: _handled_in_action_
-#  script_move_element:
-#    type: script
-#    innerHTML: |
-#      PluginWfBootstrapjs.moveModalButtons('account_create');
+  create:
+    type: div
+    settings:
+      disabled: true
+    attribute:
+      class: row
+      id: row_create_account
+    innerHTML:
+      -
+        type: div
+        attribute:
+          class: col-sm-12
+        innerHTML:
+          -
+            type: a
+            attribute:
+              onclick: |
+                $('.modal').modal('hide'); 
+                var innerHTML = this.innerHTML;
+                setTimeout(function(){
+                  PluginWfBootstrapjs.modal({id: 'modal_account_create', url: '/account/create', lable: innerHTML, size: 'sm'});
+                }, 500, innerHTML);
+            innerHTML: Create account
+          -
+            type: i
+            innerHTML: Create account is the same as forgott password.
   script:
     type: script
-    innerHTML: "if(document.getElementById('div_account_create_two_factor_authentication_key')){document.getElementById('div_account_create_two_factor_authentication_key').style.display='none';}"
+    innerHTML: "if(document.getElementById('div_frm_account_two_factor_authentication_key')){document.getElementById('div_frm_account_two_factor_authentication_key').style.display='none';}"
       
 
   
