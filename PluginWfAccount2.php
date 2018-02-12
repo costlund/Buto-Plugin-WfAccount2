@@ -18,6 +18,8 @@ plugin_modules:
     settings:
       on_signin:
         script: "location.href='/some/page';" 
+      on_activate:
+        script: "location.href='/some/page';"
       allow:
         signin: true
         registration: true
@@ -40,56 +42,20 @@ plugin_modules:
         SMTPSecure: ssl
         Port: '465'
         SMTPDebug: '0'
-        Username: buto.noreply@gmail.com
+        Username: me@gmail.com
         Password: 'my_secret_password'
         Host: smtp.gmail.com
-        From: buto.noreply@gmail.com
+        From: me@gmail.com
         FromName: 'PluginWfAccount2'
         To: me@world.com
         Subject: 'Action of PluginWfAccount2'
         Body: Body.
         WordWrap: '255'
 #code#
-<pre>
-CREATE TABLE `account` (
-  `id` varchar(50) NOT NULL default '',
-  `email` varchar(255) default NULL,
-  `password` varchar(255) default NULL,
-  `activated` int(11) default NULL,
-  `activate_key` varchar(50) default NULL,
-  `activate_password` varchar(255) default NULL,
-  `activate_date` datetime default NULL,
-  `change_email_email` varchar(255) default NULL,
-  `change_email_key` varchar(50) default NULL,
-  `change_email_date` datetime default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-CREATE TABLE `account_log` (
-  `id` int(16) NOT NULL auto_increment,
-  `account_id` varchar(50) default NULL,
-  `type` varchar(50) default NULL,
-  `date` datetime default NULL,
-  PRIMARY KEY  (`id`),
-  KEY `account_id` (`account_id`),
-  CONSTRAINT `account_log_ibfk_2` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-CREATE TABLE `account_role` (
-  `id` int(16) NOT NULL auto_increment,
-  `account_id` varchar(50) default NULL,
-  `role` varchar(50) default NULL,
-  PRIMARY KEY  (`id`),
-  KEY `account_id` (`account_id`),
-  CONSTRAINT `account_role_ibfk_2` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-</pre>
 */
 class PluginWfAccount2{
   private $ajax = false;
-  function __construct($buto = false) {
-    if($buto){
-      $GLOBALS['sys']['settings']['plugin']['wf']['form_v2']['enabled'] = 'true';
-    }
-  }
+  
   /**
   Page with a create form.  
   */
@@ -131,7 +97,6 @@ class PluginWfAccount2{
       $this->ajax = true;
     }
   }
-  
   /**
    * 
    * Set flash in sessin if needed.
@@ -148,6 +113,12 @@ class PluginWfAccount2{
     wfPlugin::includeonce('wf/yml');
     $form = new PluginWfYml('/plugin/wf/account2/form/signin.yml');
     $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
+    /**
+     * Show create account button.
+     */
+    if($settings->get('allow/registration')){
+      $page = wfArray::set($page, 'content/create/settings/disabled', false);
+    }
     /**
      * Two-factor authentication.
      */
@@ -188,7 +159,7 @@ class PluginWfAccount2{
     $form = new PluginWfYml('/plugin/wf/account2/form/email.yml');
     $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
     if(!$this->ajax){
-      unset($page['content']['script_move_element']);
+      //unset($page['content']['script_move_element']);
     }else{
       $form->setUnset('buttons');
     }
@@ -228,7 +199,7 @@ class PluginWfAccount2{
       $activate_key = $this->getKey();
       $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
       }else{
         $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
         if(!$user_id){
@@ -245,13 +216,14 @@ class PluginWfAccount2{
         }
         $this->runSQL($settings, "update account set activate_key='".$activate_key."' where id='$user_id';");
         // Script
-        $script->set(true, 'document.getElementById(\'div_account_create_email\').style.display=\'none\'');
-        $script->set(true, 'document.getElementById(\'div_account_create_password\').style.display=\'none\'');
-        $script->set(true, 'document.getElementById(\'div_account_create_key\').style.display=\'\'');
-        $script->set(true, 'document.getElementById(\'account_create_save\').value=\''.$i18n->translateFromTheme('Verify').'\'');
-        $script->set(true, 'document.getElementById(\'account_create_action\').value=\'activate\'');
+        $script->set(true, 'document.getElementById(\'div_frm_account_email\').style.display=\'none\'');
+        $script->set(true, 'document.getElementById(\'div_frm_account_password\').style.display=\'none\'');
+        $script->set(true, 'document.getElementById(\'div_frm_account_key\').style.display=\'\'');
+        $script->set(true, 'document.getElementById(\'frm_account_save\').innerHTML=\''.$i18n->translateFromTheme('Verify').'\'');
+        $script->set(true, 'document.getElementById(\'frm_account_action\').value=\'activate\'');
+        $script->set(true, 'document.getElementById(\'btn_goto_signin\').style=\'display:none\'');
         $script->set(true, 'PluginWfAccount2.sendmessage("'.wfArray::get($GLOBALS, 'sys/class').'");');
-        $script->set(true, 'PluginWfAccount2.saveForm("account_create_save", "Check your email for the key!", true);');
+        $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "Check your email for the key!", true);');
         $json->set('success', true);
         $json->set('script', $script->get());
         // Set params to send mail via page_sendmessage().
@@ -263,17 +235,17 @@ class PluginWfAccount2{
       $form->set('items/key/mandatory', true);
       $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
       }else{
         $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
         if(!$user_id){
-          $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".$i18n->translateFromTheme('User is missing!')."');"));
+          $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('User is missing!')."');"));
         }else{
           $this->log('activate', $user_id);
           /// Get user data...
           $user = $this->getUser($settings, $user_id);
           if($user->get('activate_key') != $form->get('items/key/post_value')){
-            $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".$i18n->translateFromTheme('Key does not match!')."');"));
+            $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Key does not match!')."');"));
           }else{
             $this->runSQL($settings, "update account set activated=1 where id='$user_id';");
             if($user->get('activate_password')){
@@ -282,8 +254,15 @@ class PluginWfAccount2{
             $this->runSQL($settings, "update account set activate_key=null where id='$user_id';");
             $this->runSQL($settings, "update account set activate_password=null where id='$user_id';");
             $this->runSQL($settings, "update account set activate_date=null where id='$user_id';");
-            $script->set(true, 'document.getElementById(\'account_create\').innerHTML=\''.$i18n->translateFromTheme('Account was activated! <a href="/">Home</a>.').'\'');
-            $script->set(true, "location.href='/'");
+            $script->set(true, 'document.getElementById(\'frm_account\').innerHTML=\''.$i18n->translateFromTheme('Account was activated! <a href="/">Home</a>.').'\'');
+            //$script->set(true, "location.href='/'");
+            if($settings->get('on_activate/script')){
+              //$json->set('script', array($settings->get('on_activate/script')));
+              $script->set(true, $settings->get('on_activate/script'));
+            }else{
+              //$json->set('script', array("location.href='/';"));
+              $script->set(true, "location.href='/'");
+            }              
             $json->set('success', true);
             $json->set('script', $script->get());
             wfEvent::run('account_activate');
@@ -305,15 +284,15 @@ class PluginWfAccount2{
        */
       $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
       }else{
         $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
         if(!$user_id){
-          $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".$i18n->translateFromTheme('Username or password does not match!')."');"));
+          $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Username or password does not match!')."');"));
         }else{
           if($this->validatePassword($users->get($user_id.'/password'), $form->get('items/password/post_value'))){
             if(!$users->get($user_id.'/activated')){
-              $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".$i18n->translateFromTheme('User is not activated!')."');"));
+              $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('User is not activated!')."');"));
             }else{
               if(!$settings->get('allow/two_factor_authentication')){
                 /**
@@ -332,7 +311,7 @@ class PluginWfAccount2{
                  * Two-factor authentication.
                  */
                 if($form->get('items/two_factor_authentication/post_value')=='phone' && !$users->get($user_id.'/phone')){
-                  $script->set(true, 'PluginWfAccount2.saveForm("account_create_save", "'.$i18n->translateFromTheme('Your account does not have a phone number!').'");');
+                  $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "'.$i18n->translateFromTheme('Your account does not have a phone number!').'");');
                   $json->set('success', true);
                   $json->set('script', $script->get());
                 }elseif($form->get('items/two_factor_authentication/post_value')=='email' || $form->get('items/two_factor_authentication/post_value')=='phone'){
@@ -349,12 +328,12 @@ class PluginWfAccount2{
                   /**
                    * Set script.
                    */
-                  $script->set(true, "document.getElementById('div_account_create_email').style.display='none';");
-                  $script->set(true, "document.getElementById('div_account_create_password').style.display='none';");
-                  $script->set(true, "document.getElementById('div_account_create_two_factor_authentication').style.display='none';");
-                  $script->set(true, "document.getElementById('div_account_create_two_factor_authentication_key').style.display='';");
-                  $script->set(true, "document.getElementById('account_create_action').value='two_factor_authentication';");
-                  $script->set(true, "document.getElementById('account_create_save').innerHTML='".$i18n->translateFromTheme('Verify')."';");
+                  $script->set(true, "document.getElementById('div_frm_account_email').style.display='none';");
+                  $script->set(true, "document.getElementById('div_frm_account_password').style.display='none';");
+                  $script->set(true, "document.getElementById('div_frm_account_two_factor_authentication').style.display='none';");
+                  $script->set(true, "document.getElementById('div_frm_account_two_factor_authentication_key').style.display='';");
+                  $script->set(true, "document.getElementById('frm_account_action').value='two_factor_authentication';");
+                  $script->set(true, "document.getElementById('frm_account_save').innerHTML='".$i18n->translateFromTheme('Verify')."';");
                   if(!wfHelp::isLocalhost()){
                     /**
                      * Send message if not in development mode.
@@ -373,21 +352,21 @@ class PluginWfAccount2{
                       $this->log('two_factor_authentication_phone', $user_id);
                     }
                   }
-                  $script->set(true, 'PluginWfAccount2.saveForm("account_create_save", "'.$i18n->translateFromTheme('An authentication key sent to you!').'", true);');
+                  $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "'.$i18n->translateFromTheme('An authentication key sent to you!').'", true);');
                   if(wfHelp::isLocalhost()){
                     /**
                      * Set key filed direct if on developer machine.
                      */
-                    $script->set(true, "document.getElementById('account_create_two_factor_authentication_key').value='$get_key';");
+                    $script->set(true, "document.getElementById('frm_account_two_factor_authentication_key').value='$get_key';");
                   }
-                  $script->set(true, "document.getElementById('account_create_two_factor_authentication_key').focus();");
+                  $script->set(true, "document.getElementById('frm_account_two_factor_authentication_key').focus();");
                   $json->set('success', true);
                   $json->set('script', $script->get());
                 }
               }
             }
           }else{
-            $json->set('script', array("PluginWfAccount2.saveForm('account_create_save', '".$i18n->translateFromTheme('Username or password does not match!')."');"));
+            $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Username or password does not match!')."');"));
           }
         }
       }
@@ -407,14 +386,14 @@ class PluginWfAccount2{
             /**
              * Key mismatch.
              */
-            $script->set(true, "PluginWfAccount2.saveForm('account_create_save', '".$i18n->translateFromTheme('The key is incorrect!')."');");
+            $script->set(true, "PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('The key is incorrect!')."');");
             $json->set('success', false);
             $json->set('script', $script->get());
           }elseif($seconds > $key_timeout){
             /**
              * Key timeout.
              */
-            $script->set(true, "PluginWfAccount2.saveForm('account_create_save', '".$i18n->translateFromTheme('Key expired, because of the long time since it was created!')."');");
+            $script->set(true, "PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Key expired, because of the long time since it was created!')."');");
             $json->set('success', false);
             $json->set('script', $script->get());
           }else{
@@ -440,23 +419,23 @@ class PluginWfAccount2{
       $this->checkAllow($settings, 'change_email');
       $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('account_email_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
       }else{
         if(!$this->validatePassword($users->get(wfArray::get($_SESSION, 'user_id').'/password'), $form->get('items/password/post_value'))){
-          $json->set('script', array("PluginWfAccount2.saveForm('account_email_save', '".$i18n->translateFromTheme('Password does not match!')."');"));
+          $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Password does not match!')."');"));
         }else{
           $get_key = $this->getKey();
           $this->runSQL($settings, "update account set change_email_email='".$form->get('items/new_email/post_value')."' where id='".wfArray::get($_SESSION, 'user_id')."';");
           $this->runSQL($settings, "update account set change_email_key='".$get_key."' where id='".wfArray::get($_SESSION, 'user_id')."';");
           $this->runSQL($settings, "update account set change_email_date='".date('Y-m-d H:i:s')."' where id='".wfArray::get($_SESSION, 'user_id')."';");
           $script->set(true, 'document.getElementById(\'wf_account_current_email\').style.display=\'none\'');
-          $script->set(true, 'document.getElementById(\'div_account_email_new_email\').style.display=\'none\'');
-          $script->set(true, 'document.getElementById(\'div_account_email_password\').style.display=\'none\'');
-          $script->set(true, 'document.getElementById(\'div_account_email_key\').style.display=\'\'');
-          $script->set(true, 'document.getElementById(\'account_email_save\').value=\''.$i18n->translateFromTheme('Verify').'\'');
-          $script->set(true, 'document.getElementById(\'account_email_action\').value=\'email_verify\'');
+          $script->set(true, 'document.getElementById(\'div_frm_account_new_email\').style.display=\'none\'');
+          $script->set(true, 'document.getElementById(\'div_frm_account_password\').style.display=\'none\'');
+          $script->set(true, 'document.getElementById(\'div_frm_account_key\').style.display=\'\'');
+          $script->set(true, 'document.getElementById(\'frm_account_save\').value=\''.$i18n->translateFromTheme('Verify').'\'');
+          $script->set(true, 'document.getElementById(\'frm_account_action\').value=\'email_verify\'');
           $script->set(true, 'PluginWfAccount2.sendmessage("'.wfArray::get($GLOBALS, 'sys/class').'");');
-          $script->set(true, 'PluginWfAccount2.saveForm("account_email_save", "Check your email for the key!", true);');
+          $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "Check your email for the key!", true);');
           $json->set('success', true);
           $json->set('script', $script->get());
           $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $form->get('items/new_email/post_value'));
@@ -477,7 +456,7 @@ class PluginWfAccount2{
       $form->set('items/key/validator/', $validator->get());
       $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('account_email_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
       }else{
         // Validate.
         $this->runSQL($settings, "update account set email='".$change_email_email."' where id='".wfArray::get($_SESSION, 'user_id')."';");
@@ -498,7 +477,7 @@ class PluginWfAccount2{
       $this->checkAllow($settings, 'change_password');
       $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('account_password_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
       }else{
         if($settings->get('on_signin/script')){
           $json->set('script', array($settings->get('on_signin/script')));
@@ -628,7 +607,7 @@ class PluginWfAccount2{
     $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
     
     if(!$this->ajax){
-      unset($page['content']['script_move_element']);
+      //unset($page['content']['script_move_element']);
     }else{
       $form->setUnset('buttons');
     }
@@ -658,7 +637,7 @@ class PluginWfAccount2{
     if(wfRequest::get('auto')){
       $page = wfArray::set($page, 'content/script/settings/disabled', false);
     }
-    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/login/layout');
+    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     wfDocument::mergeLayout($page);
   }
   public function sign_in($key, $users, $settings){

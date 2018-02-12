@@ -1,8 +1,7 @@
 url: _set_in_action_
-post_to_divzzzzz: 'sdfds'
 ajax: true
 submit_value: Create
-id: account_create
+id: frm_account
 items:
   email:
     type: varchar
