@@ -229,7 +229,7 @@ class PluginWfAccount2{
         $json->set('script', $script->get());
         // Set params to send mail via page_sendmessage().
         $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $form->get('items/email/post_value'));
-        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', 'Key to activate account is: '.$activate_key);
+        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $i18n->translateFromTheme('Key to activate account is:').' '.$activate_key);
       }
     }elseif($action=='activate'){
       $this->checkAllow($settings, 'registration');
