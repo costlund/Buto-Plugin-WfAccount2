@@ -34,7 +34,7 @@ items:
     default: 'email'
 success_redirect: /page/home
 buttons:
-  -
+  btn_cancel:
     type: a
     innerHTML: Cancel
     attribute:

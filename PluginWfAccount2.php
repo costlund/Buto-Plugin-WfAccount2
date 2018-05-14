@@ -59,26 +59,43 @@ class PluginWfAccount2{
   Page with a create form.  
   */
   public function page_create(){
+    /**
+     * 
+     */
     $this->init_page();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'registration');
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
+    /**
+     * 
+     */
     if(wfUser::isSecure()){
+      /**
+       * User is already verified.
+       */
       $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/signedin.yml';
       $page = wfFilesystem::loadYml($filename);
       $page = wfArray::set($page, 'content/signin/innerHTML/signout/attribute/href', '/'.wfArray::get($GLOBALS, 'sys/class').'/signout');
       wfDocument::mergeLayout($page);
       return null;
     }else{
+      /**
+       * 
+       */
       $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/create.yml';
       $page = wfFilesystem::loadYml($filename);
       $form = new PluginWfYml('/plugin/wf/account2/form/create.yml');
       $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
-      if(!$this->ajax){
-        unset($page['content']['script_move_element']);
-      }else{
-        $form->setUnset('buttons');
+      /**
+       * Cancel button.
+       */
+      if($this->ajax){
+        $form->set('buttons/btn_cancel/attribute/href', '#!');
+        $form->set('buttons/btn_cancel/attribute/onclick', "$('.modal').modal('hide');");
       }
+      /**
+       * 
+       */
       $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
       wfDocument::mergeLayout($page);
       return null;
@@ -154,6 +171,9 @@ class PluginWfAccount2{
     wfDocument::mergeLayout($page);
   }  
   public function page_email(){
+    /**
+     * 
+     */
     $this->init_page();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'change_email');
@@ -162,10 +182,12 @@ class PluginWfAccount2{
     $page = wfFilesystem::loadYml($filename);
     $form = new PluginWfYml('/plugin/wf/account2/form/email.yml');
     $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
-    if(!$this->ajax){
-      //unset($page['content']['script_move_element']);
-    }else{
-      $form->setUnset('buttons');
+    /**
+     * Cancel button.
+     */
+    if($this->ajax){
+      $form->set('buttons/btn_cancel/attribute/href', '#!');
+      $form->set('buttons/btn_cancel/attribute/onclick', "$('.modal').modal('hide');");
     }
     $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);
@@ -224,12 +246,12 @@ class PluginWfAccount2{
         $script->set(true, 'document.getElementById(\'frm_account_action\').value=\'activate\'');
         $script->set(true, 'document.getElementById(\'btn_goto_signin\').style=\'display:none\'');
         $script->set(true, 'PluginWfAccount2.sendmessage("'.wfArray::get($GLOBALS, 'sys/class').'");');
-        $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "Check your email for the key!", true);');
+        $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "'.$i18n->translateFromTheme('Check your email for the key!').'", true);');
         $json->set('success', true);
         $json->set('script', $script->get());
         // Set params to send mail via page_sendmessage().
         $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $form->get('items/email/post_value'));
-        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', 'Key to activate account is: '.$activate_key);
+        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $i18n->translateFromTheme('Key to activate account is:').' '.$activate_key);
       }
     }elseif($action=='activate'){
       $this->checkAllow($settings, 'registration');
@@ -433,7 +455,7 @@ class PluginWfAccount2{
           $script->set(true, 'document.getElementById(\'frm_account_save\').value=\''.$i18n->translateFromTheme('Verify').'\'');
           $script->set(true, 'document.getElementById(\'frm_account_action\').value=\'email_verify\'');
           $script->set(true, 'PluginWfAccount2.sendmessage("'.wfArray::get($GLOBALS, 'sys/class').'");');
-          $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "Check your email for the key!", true);');
+          $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "'.$i18n->translateFromTheme('Check your email for the key!').'", true);');
           $json->set('success', true);
           $json->set('script', $script->get());
           $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $form->get('items/new_email/post_value'));
@@ -584,6 +606,9 @@ class PluginWfAccount2{
     exit(json_encode($json->get()));
   }
   public function page_password(){
+    /**
+     * 
+     */
     $this->init_page();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'change_password');
@@ -592,10 +617,16 @@ class PluginWfAccount2{
     $page = wfFilesystem::loadYml($filename);
     $form = new PluginWfYml('/plugin/wf/account2/form/password.yml');
     $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
-    if(!$this->ajax){
-    }else{
-      $form->setUnset('buttons');
+    /**
+     * Cancel button.
+     */
+    if($this->ajax){
+      $form->set('buttons/btn_cancel/attribute/href', '#!');
+      $form->set('buttons/btn_cancel/attribute/onclick', "$('.modal').modal('hide');");
     }
+    /**
+     * 
+     */
     $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);
   }

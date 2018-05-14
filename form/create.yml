@@ -8,8 +8,6 @@ items:
     label: Email
     mandatory: true
     default: ''
-    validate_as_emailzzz: true
-    container_classzzz: row
     validator:
       -
         plugin: wf/form
@@ -19,11 +17,12 @@ items:
     label: Password
     mandatory: true
     default: 
-    container_classzzz: row
     validator:
       -
         plugin: wf/form
         method: validate_password
+    info:
+      text: 'Password must have at lest one uppercase, lowercase, number and a minimum length of 8!'
   key:
     type: varchar
     label: 'Key*'
@@ -37,7 +36,7 @@ items:
     default: 'create'
 success_redirect: /page/home
 buttons:
-  -
+  btn_cancel:
     type: a
     innerHTML: Cancel
     attribute:
