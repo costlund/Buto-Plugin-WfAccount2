@@ -10,6 +10,7 @@
  <li>Registration will not create a new account if one exist, it will only do a password recovery in hidden mode.
  <li>Registration and change email will send a key via email for verify purpose.
  <li>If using two factor authentication plugin sms/pixie_v1 is required.
+ <li>Set allow/remember along with key to save signin details in cookie. This will auto signin user if session has timed out. Not to be used along with two factor authentication.
 </ul>
 #code-yml#
 plugin_modules:
@@ -26,6 +27,7 @@ plugin_modules:
         change_email: true
         change_password: true
         two_factor_authentication: true
+        remember: false
       two_factor_authentication:
         key_timeout: 600
       sms_pixie:
@@ -51,6 +53,13 @@ plugin_modules:
         Subject: 'Action of PluginWfAccount2'
         Body: Body.
         WordWrap: '255'
+      key: _my_key_to_crypt_cookies_
+_events:
+  _: If we want user to auto signin.
+  load_theme_config_settings_after:
+    -
+      plugin: 'wf/account2'
+      method: signin
 #code#
 */
 class PluginWfAccount2{
@@ -516,7 +525,7 @@ class PluginWfAccount2{
     }
   }
   private function log($type, $user_id = null){
-    $settings = new PluginWfArray(wfPlugin::getModuleSettings());
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
     wfPlugin::includeonce('wf/mysql');
     $mysql = new PluginWfMysql();
     $mysql->open($settings->get('mysql'));
@@ -640,6 +649,7 @@ class PluginWfAccount2{
      */
     $theme = wfArray::get($_SESSION, 'theme');
     session_destroy();
+    $this->cookie_forget();
     if($theme){
       /**
        * If theme is set we start a new session with it.
@@ -655,9 +665,74 @@ class PluginWfAccount2{
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     wfDocument::mergeLayout($page);
   }
+  private function cookie_forget(){
+    setcookie('wf_account2_1', '', time()-1000, "/");
+    setcookie('wf_account2_2', '', time()-1000, "/");
+    setcookie('wf_account2_3', '', time()-1000, "/");
+  }
+  private function cookie_remember($settings, $user){
+    if($settings->get('key') && $settings->get('allow/remember')){
+      setcookie('wf_account2_1', $user->get('email')   , strtotime( '+30 days' ), "/");
+      setcookie('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')), strtotime( '+30 days' ), "/");
+    }
+  }
+  /**
+   * 
+   */
+  public function event_signin(){
+    /**
+     * Skip if user already in.
+     */
+    if(wfUser::hasRole('client')){
+      return null;
+    }
+    /**
+     * Skip if no cookies 1, 2 or has 3.
+     */
+    if(!isset($_COOKIE['wf_account2_1']) || !isset($_COOKIE['wf_account2_2']) || isset($_COOKIE['wf_account2_3']) ){
+      return null;
+    }
+    /**
+     * Skip if settings is incorrect.
+     */
+    $this->init_page();
+    wfPlugin::includeonce('wf/array');
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
+    if(!$settings->get('key') || !$settings->get('allow/remember')){
+      return null;
+    }
+    /**
+     *  Check if user match by email. 
+     */
+    $users = $this->getUsers($settings);
+    $user_id = $this->getUserId($users->get(), $_COOKIE['wf_account2_1']);
+    if(!$user_id){
+      setcookie('wf_account2_3', '1', strtotime( '+30 days' ), "/");
+      return null;
+    }
+    /**
+     * Validate password.
+     */
+    if(wfCrypt::isValid($users->get($user_id.'/password'), $_COOKIE['wf_account2_2'])){
+      $this->sign_in($user_id, $users->get(), $settings);
+      $this->log('auto');
+    }else{
+      /**
+       * Set cookie to not try again on failure.
+       */
+      setcookie('wf_account2_3', '1', strtotime( '+30 days' ), "/");
+    }
+  }
+  /**
+   * 
+   * @param type $key
+   * @param type $users
+   * @param type $settings
+   */
   public function sign_in($key, $users, $settings){
     wfPlugin::includeonce('wf/array');
     $user = new PluginWfArray($users[$key]);
+    $this->cookie_remember($settings, $user);
     $_SESSION['secure']=true;
     $_SESSION['email']=$user->get('email');
     $_SESSION['user_id']=$key;
