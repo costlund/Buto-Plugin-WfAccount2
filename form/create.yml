@@ -10,7 +10,7 @@ items:
     default: ''
     validator:
       -
-        plugin: wf/form
+        plugin: wf/form_v2
         method: validate_email
   password:
     type: password
@@ -19,7 +19,7 @@ items:
     default: 
     validator:
       -
-        plugin: wf/form
+        plugin: wf/form_v2
         method: validate_password
     info:
       text: 'Password must have at lest one uppercase, lowercase, number and a minimum length of 8!'
