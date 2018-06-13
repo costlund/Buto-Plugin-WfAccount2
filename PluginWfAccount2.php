@@ -115,7 +115,7 @@ class PluginWfAccount2{
      */
     wfPlugin::includeonce('wf/array');
     wfPlugin::includeonce('wf/yml');
-    wfPlugin::includeonce('wf/i18n');
+    wfPlugin::includeonce('i18n/translate_v1');
     wfPlugin::includeonce('wf/form_v2');
     /**
      * Enable.
@@ -200,7 +200,7 @@ class PluginWfAccount2{
     /**
      * i18n.
      */
-    $i18n = new PluginWfI18n();
+    $i18n = new PluginI18nTranslate_v1();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $action = wfRequest::get('action');
     $script = new PluginWfArray();
@@ -689,8 +689,8 @@ class PluginWfAccount2{
       $settings = new PluginWfArray(wfPlugin::getModuleSettings());
       $users = $this->getUsers($settings);
       if(!$this->validatePassword($users->get(wfArray::get($_SESSION, 'user_id').'/password'), wfArray::get($form, "items/$field/post_value"))){
-        wfPlugin::includeonce('wf/i18n');
-        $i18n = new PluginWfI18n();
+        wfPlugin::includeonce('i18n/translate_v1');
+        $i18n = new PluginI18nTranslate_v1();
         $form = wfArray::set($form, "items/$field/is_valid", false);
         $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('Password does not match!'));
       }
