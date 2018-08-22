@@ -86,6 +86,19 @@ tables:
       role:
         type: varchar(50)
         default: 'null'
+extra:
+  _description: Extra field to add to each table if not exist in schema.
+  field:
+    created_at:
+      type: timestamp
+      default: CURRENT_TIMESTAMP
+    updated_at:
+      type: timestamp
+      default: 'null'
+    created_by:
+      type: varchar(50)
+    updated_by:
+      type: varchar(50)
       
         
         
