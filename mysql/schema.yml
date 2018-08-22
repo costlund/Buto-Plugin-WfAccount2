@@ -9,6 +9,9 @@ tables:
       email: 
         type: varchar(255)
         default: 'null'
+      username:
+        type: varchar(50)
+        default: 'null'
       password: 
         type: varchar(255)
         default: 'null'
