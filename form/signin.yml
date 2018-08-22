@@ -5,13 +5,9 @@ id: frm_account
 items:
   email:
     type: varchar
-    label: Email
+    label: Email or Username
     mandatory: true
     default: ''
-    validator:
-      -
-        plugin: wf/form_v2
-        method: validate_email
   password:
     type: password
     label: Password

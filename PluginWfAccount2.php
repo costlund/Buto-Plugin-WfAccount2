@@ -23,6 +23,7 @@ plugin_modules:
         script: "location.href='/some/page';"
       allow:
         signin: true
+        signin_method: null(email and username)/email/username
         registration: true
         change_email: true
         change_password: true
@@ -143,29 +144,12 @@ class PluginWfAccount2{
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/signin.yml';
     $page = wfFilesystem::loadYml($filename);
-    $form = new PluginWfYml('/plugin/wf/account2/form/signin.yml');
-    $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
+    $form = $this->getFormSignin($settings);
     /**
      * Show create account button.
      */
     if($settings->get('allow/registration')){
       $page = wfArray::set($page, 'content/create/settings/disabled', false);
-    }
-    /**
-     * Two-factor authentication.
-     */
-    if($settings->get('allow/two_factor_authentication')){
-      $form->set('items/two_factor_authentication/type', 'varchar');
-      $form->set('items/two_factor_authentication/mandatory', true);
-    }else{
-      $form->set('items/two_factor_authentication/container_style', 'display:none;');      
-    }
-    /**
-     * Cancel button.
-     */
-    if($this->ajax){
-      $form->set('buttons/btn_cancel/attribute/href', '#!');
-      $form->set('buttons/btn_cancel/attribute/onclick', "$('.modal').modal('hide');");
     }
     /**
      * 
@@ -201,6 +185,50 @@ class PluginWfAccount2{
     $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);
   }
+  private function getFormSignin($settings){
+    $form = new PluginWfYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/signin.yml');
+    /**
+     * Set url.
+     */
+    $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
+    /**
+     * Two-factor authentication.
+     */
+    if($settings->get('allow/two_factor_authentication')){
+      $form->set('items/two_factor_authentication/type', 'varchar');
+      $form->set('items/two_factor_authentication/mandatory', true);
+    }else{
+      $form->set('items/two_factor_authentication/container_style', 'display:none;');      
+    }
+    /**
+     * Cancel button.
+     */
+    if($this->ajax){
+      $form->set('buttons/btn_cancel/attribute/href', '#!');
+      $form->set('buttons/btn_cancel/attribute/onclick', "$('.modal').modal('hide');");
+    }
+    /**
+     * Change email label if signin_method is email.
+     */
+    if($settings->get('allow/signin_method')=='email'){
+      $form->set('items/email/label', 'Email');
+    }elseif($settings->get('allow/signin_method')=='username'){
+      $form->set('items/email/label', 'Username');
+    }elseif(is_null($settings->get('allow/signin_method'))){
+      /**
+       * Both email and username is used.
+       */
+    }else{
+      throw new Exception('PluginWfAccount2 says: Param allow/signin_method has invalid value.');
+    }
+    /**
+     * Add email validator if signin_method is email.
+     */
+    if($settings->get('allow/signin_method')=='email'){
+      $form->set('items/email/validator/', array('plugin' => 'wf/form_v2', 'method' => 'validate_email'));
+    }
+    return $form;
+  }
   public function page_action(){
     if(!wfRequest::isPost()){
       exit('');
@@ -220,7 +248,7 @@ class PluginWfAccount2{
     if(($action=='create' || $action=='activate')){
       $form = new PluginWfYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/create.yml');
     }elseif($action=='signin' || $action=='two_factor_authentication'){
-      $form = new PluginWfYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/signin.yml');
+      $form = $this->getFormSignin($settings);
     }elseif($action=='email' || $action=='email_verify'){
       $form = new PluginWfYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/email.yml');
     }elseif($action=='password'){
@@ -301,13 +329,6 @@ class PluginWfAccount2{
       }
     }elseif($action=='signin'){
       $this->checkAllow($settings, 'signin');
-      /**
-       * Two-factor authentication.
-       */
-      if($settings->get('allow/two_factor_authentication')){
-        $form->set('items/two_factor_authentication/type', 'varchar');
-        $form->set('items/two_factor_authentication/mandatory', true);
-      }
       /**
        * 
        */
@@ -545,10 +566,26 @@ class PluginWfAccount2{
    */
   private function getUserId($users, $email){
     $user_id = null;
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings());
+    $signin_method = $settings->get('allow/signin_method');
     foreach ($users as $key => $value) {
-      if(strtolower($email)==strtolower(wfArray::get($value, 'email'))){
-        $user_id = $key;
-        break;
+      /**
+       * Check email.
+       */
+      if(!$signin_method || $signin_method=='email'){
+        if(strtolower($email)==strtolower(wfArray::get($value, 'email'))){
+          $user_id = $key;
+          break;
+        }
+      }
+      /**
+       * Check username.
+       */
+      if(!$signin_method || $signin_method=='username'){
+        if($email==wfArray::get($value, 'username')){
+          $user_id = $key;
+          break;
+        }
       }
     }
     return $user_id;
@@ -557,8 +594,8 @@ class PluginWfAccount2{
     wfPlugin::includeonce('wf/mysql');
     $mysql = new PluginWfMysql();
     $mysql->open($settings->get('mysql'));
-    $test = $mysql->runSql('select * from account;');
-    return new PluginWfArray($test['data']);
+    $rs = $mysql->runSql('select id, email, password, activated, phone, username from account;');
+    return new PluginWfArray($rs['data']);
   }
   private function getUser($settings, $user_id){
     wfPlugin::includeonce('wf/mysql');
@@ -724,7 +761,7 @@ class PluginWfAccount2{
     }
   }
   /**
-   * 
+   * Set session params and run event signin.
    * @param type $key
    * @param type $users
    * @param type $settings
