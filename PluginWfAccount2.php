@@ -553,7 +553,9 @@ class PluginWfAccount2{
     if(!$user_id){
       $user_id = wfArray::get($_SESSION, 'user_id');
     }
-    $mysql->runSql("insert into account_log (account_id, type, date) values ('".$user_id."', '$type', '".date('Y-m-d H:i:s')."');");
+    $HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
+    $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
+    $mysql->runSql("insert into account_log (account_id, type, date, HTTP_USER_AGENT, REMOTE_ADDR) values ('".$user_id."', '$type', '".date('Y-m-d H:i:s')."', '$HTTP_USER_AGENT', '$REMOTE_ADDR');");
   }
   private function getKey(){
     return rand(100000, 999999);

@@ -70,6 +70,10 @@ tables:
       date:
         type: datetime
         default: 'null'
+      HTTP_USER_AGENT:
+        type: mediumtext
+      REMOTE_ADDR:
+        type: mediumtext
   account_role:
     _description: Account roles.
     field:
