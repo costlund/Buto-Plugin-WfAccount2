@@ -8,46 +8,32 @@ tables:
         primary_key: true
       email: 
         type: varchar(255)
-        default: 'null'
       username:
         type: varchar(50)
-        default: 'null'
       password: 
         type: varchar(255)
-        default: 'null'
       activated: 
         type: int(11)
-        default: 'null'
       activate_key: 
         type: varchar(50)
-        default: 'null'
       activate_password: 
         type: varchar(255)
-        default: 'null'
       activate_date: 
         type: datetime
-        default: 'null'
       change_email_email: 
         type: varchar(255)
-        default: 'null'
       change_email_key: 
         type: varchar(50)
-        default: 'null'
       change_email_date: 
         type: datetime
-        default: 'null'
       phone:
         type: varchar(255)
-        default: 'null'
       two_factor_authentication_key: 
         type: varchar(50)
-        default: 'null'
       two_factor_authentication_date: 
         type: datetime
-        default: 'null'
       cert_id:
         type: varchar(255)
-        default: 'null'
   account_log:
     _description: Account log.
     field:
@@ -58,7 +44,6 @@ tables:
         primary_key: true        
       account_id: 
         type: varchar(50)
-        default: 'null'
         foreing_key:
           reference_table: account
           reference_field: id
@@ -66,10 +51,8 @@ tables:
           on_update: CASCADE        
       type: 
         type: varchar(50)
-        default: 'null'
       date:
         type: datetime
-        default: 'null'
       HTTP_USER_AGENT:
         type: mediumtext
       REMOTE_ADDR:
@@ -84,7 +67,6 @@ tables:
         primary_key: true        
       account_id: 
         type: varchar(50)
-        default: 'null'
         foreing_key:
           reference_table: account
           reference_field: id
@@ -92,7 +74,6 @@ tables:
           on_update: CASCADE
       role:
         type: varchar(50)
-        default: 'null'
 extra:
   _description: Extra field to add to each table if not exist in schema.
   field:
@@ -101,7 +82,6 @@ extra:
       default: CURRENT_TIMESTAMP
     updated_at:
       type: timestamp
-      default: 'null'
     created_by:
       type: varchar(50)
     updated_by:
