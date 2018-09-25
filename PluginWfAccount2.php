@@ -10,7 +10,7 @@
  <li>Registration will not create a new account if one exist, it will only do a password recovery in hidden mode.
  <li>Registration and change email will send a key via email for verify purpose.
  <li>If using two factor authentication plugin sms/pixie_v1 is required.
- <li>Set allow/remember along with key to save signin details in cookie. This will auto signin user if session has timed out. Not to be used along with two factor authentication.
+ <li>Set allow/remember along with event to save signin details in cookie. This will auto signin user if session has timed out. Not to be used along with two factor authentication.
 </ul>
 #code-yml#
 plugin_modules:
@@ -54,7 +54,6 @@ plugin_modules:
         Subject: 'Action of PluginWfAccount2'
         Body: Body.
         WordWrap: '255'
-      key: _my_key_to_crypt_cookies_
 _events:
   _: If we want user to auto signin.
   load_theme_config_settings_after:
@@ -710,7 +709,7 @@ class PluginWfAccount2{
     setcookie('wf_account2_3', '', time()-1000, "/");
   }
   private function cookie_remember($settings, $user){
-    if($settings->get('key') && $settings->get('allow/remember')){
+    if($settings->get('allow/remember')){
       setcookie('wf_account2_1', $user->get('email')   , strtotime( '+30 days' ), "/");
       setcookie('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')), strtotime( '+30 days' ), "/");
     }
@@ -737,7 +736,7 @@ class PluginWfAccount2{
     $this->init_page();
     wfPlugin::includeonce('wf/array');
     $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
-    if(!$settings->get('key') || !$settings->get('allow/remember')){
+    if(!$settings->get('allow/remember')){
       return null;
     }
     /**
