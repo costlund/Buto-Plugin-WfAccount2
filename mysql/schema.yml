@@ -57,6 +57,8 @@ tables:
         type: mediumtext
       REMOTE_ADDR:
         type: mediumtext
+      session_id:
+        type: varchar(255)
   account_role:
     _description: Account roles.
     field:
