@@ -774,6 +774,7 @@ class PluginWfAccount2{
     $this->cookie_remember($settings, $user);
     $_SESSION['secure']=true;
     $_SESSION['email']=$user->get('email');
+    $_SESSION['username']=$user->get('username');
     $_SESSION['user_id']=$key;
     $_SESSION['role'] = $this->get_roles($key, $settings);
     if($user->get('theme')){
