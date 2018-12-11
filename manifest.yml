@@ -1,4 +1,11 @@
 version: '1.1'
+history:
+  '1.1':
+    date: '2018-12-11'
+    description: 'Minor css change for Bootstrap 4.'
+  '1.0':
+    date: '2018-01-01'
+    description: 'First version.'
 sys:
   -
     name: mercury
