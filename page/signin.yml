@@ -20,7 +20,7 @@ content:
       frm_login:
         type: widget
         data:
-          plugin: 'wf/form_v2'
+          plugin: 'form/form_v1'
           method: render
           data: _handled_in_action_
   create:

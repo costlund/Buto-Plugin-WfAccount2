@@ -64,6 +64,10 @@ _events:
 */
 class PluginWfAccount2{
   private $ajax = false;
+  function __construct() {
+    wfPlugin::includeonce('form/form_v1');
+    wfPlugin::enable('form/form_v1');
+  }
   /**
   Page with a create form.  
   */
@@ -125,11 +129,9 @@ class PluginWfAccount2{
     wfPlugin::includeonce('wf/array');
     wfPlugin::includeonce('wf/yml');
     wfPlugin::includeonce('i18n/translate_v1');
-    wfPlugin::includeonce('wf/form_v2');
     /**
      * Enable.
      */
-    wfPlugin::enable('wf/form_v2');
   }
   /**
    * 
@@ -224,7 +226,7 @@ class PluginWfAccount2{
      * Add email validator if signin_method is email.
      */
     if($settings->get('allow/signin_method')=='email'){
-      $form->set('items/email/validator/', array('plugin' => 'wf/form_v2', 'method' => 'validate_email'));
+      $form->set('items/email/validator/', array('plugin' => 'form/form_v1', 'method' => 'validate_email'));
     }
     return $form;
   }
@@ -256,9 +258,12 @@ class PluginWfAccount2{
     if($action=='create'){
       $this->checkAllow($settings, 'registration');
       $activate_key = $this->getKey();
-      $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
+      $f = new PluginFormForm_v1();
+      $f->data = $form->get();
+      $f->bindAndValidate();
+      $form->set(null, $f->data);
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
       }else{
         $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
         if(!$user_id){
@@ -292,9 +297,12 @@ class PluginWfAccount2{
     }elseif($action=='activate'){
       $this->checkAllow($settings, 'registration');
       $form->set('items/key/mandatory', true);
-      $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
+      $f = new PluginFormForm_v1();
+      $f->data = $form->get();
+      $f->bindAndValidate();
+      $form->set(null, $f->data);
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
       }else{
         $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
         if(!$user_id){
@@ -331,9 +339,13 @@ class PluginWfAccount2{
       /**
        * 
        */
-      $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
+      
+      $f = new PluginFormForm_v1();
+      $f->data = $form->get();
+      $f->bindAndValidate();
+      $form->set(null, $f->data);
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '". $f->getErrors() ."');"));
       }else{
         $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
         if(!$user_id){
@@ -421,7 +433,10 @@ class PluginWfAccount2{
       }
     }elseif($action=='two_factor_authentication'){
       /** Tow-factor authentication **/
-      $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
+      $f = new PluginFormForm_v1();
+      $f->data = $form->get();
+      $f->bindAndValidate();
+      $form->set(null, $f->data);
       $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
       if($user_id){
         if($this->validatePassword($users->get($user_id.'/password'), $form->get('items/password/post_value')) && $users->get($user_id.'/activated')){
@@ -466,9 +481,12 @@ class PluginWfAccount2{
       }
     }elseif($action=='email' && wfUser::isSecure()){
       $this->checkAllow($settings, 'change_email');
-      $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
+      $f = new PluginFormForm_v1();
+      $f->data = $form->get();
+      $f->bindAndValidate();
+      $form->set(null, $f->data);
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
       }else{
         if(!$this->validatePassword($users->get(wfArray::get($_SESSION, 'user_id').'/password'), $form->get('items/password/post_value'))){
           $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Password does not match!')."');"));
@@ -503,9 +521,12 @@ class PluginWfAccount2{
       $validator->set('method', 'validate_equal');
       $validator->set('data/value', $change_email_key);
       $form->set('items/key/validator/', $validator->get());
-      $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
+      $f = new PluginFormForm_v1();
+      $f->data = $form->get();
+      $f->bindAndValidate();
+      $form->set(null, $f->data);
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
       }else{
         // Validate.
         $this->runSQL($settings, "update account set email='".$change_email_email."' where id='".wfArray::get($_SESSION, 'user_id')."';");
@@ -522,9 +543,12 @@ class PluginWfAccount2{
       }
     }elseif($action=='password' && wfUser::isSecure()){
       $this->checkAllow($settings, 'change_password');
-      $form->set(null, PluginWfForm_v2::bindAndValidate($form->get()));
+      $f = new PluginFormForm_v1();
+      $f->data = $form->get();
+      $f->bindAndValidate();
+      $form->set(null, $f->data);
       if(!$form->get('is_valid')){
-        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".PluginWfForm_v2::getErrors($form->get())."');"));
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
       }else{
         if($settings->get('on_signin/script')){
           $json->set('script', array($settings->get('on_signin/script')));

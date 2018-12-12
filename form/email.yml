@@ -10,7 +10,7 @@ items:
     default: ''
     validator:
       -
-        plugin: wf/form_v2
+        plugin: form/form_v1
         method: validate_email
   password:
     type: password

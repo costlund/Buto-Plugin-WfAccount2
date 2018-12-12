@@ -8,7 +8,7 @@ settings:
       key: 'sys/settings/plugin/wf/callbackjson/enabled'
       value: true
     -
-      key: 'sys/settings/plugin/wf/form_v2/enabled'
+      key: 'sys/settings/plugin/form/form_v1/enabled'
       value: true
 content:
   doctype:
@@ -25,16 +25,6 @@ content:
           title:
             type: title
             innerHTML: 'globals:sys/page/settings/title'
-#          twitter_bootstrap_meta:
-#            type: widget
-#            data:
-#              plugin: 'twitter/bootstrap335v'
-#              method: meta
-#          twitter_bootstrap_link:
-#            type: widget
-#            data:
-#              plugin: 'twitter/bootstrap335v'
-#              method: link
           twitter_bootstrap_link:
             type: widget
             data:
