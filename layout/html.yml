@@ -39,6 +39,11 @@ content:
             type: script
             attribute:
               src: '/plugin/wf/account2/include.js?x=1'
+          form_form_v1:
+            type: widget
+            data:
+              plugin: 'form/form_v1'
+              method: include
       body:
         type: body
         innerHTML: 'body...'
