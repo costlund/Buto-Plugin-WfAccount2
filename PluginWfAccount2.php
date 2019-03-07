@@ -1,67 +1,4 @@
 <?php
-/**
-<p>New version 161001 where only MySQL can be used instead of yml user files. It depends on wf/phpmailer to send messages. Therefore settings/phpmailer is needed.</p>
-<p>Features</p>
-<ul>
- <li>Sign in, registration, change email, change password is what this plugin is about.
- <li>Source must be MySql.
- <li>Settings form wf/phpmailer is needed.
- <li>Email is sent when registration and change email.
- <li>Registration will not create a new account if one exist, it will only do a password recovery in hidden mode.
- <li>Registration and change email will send a key via email for verify purpose.
- <li>If using two factor authentication plugin sms/pixie_v1 is required.
- <li>Set allow/remember along with event to save signin details in cookie. This will auto signin user if session has timed out. Not to be used along with two factor authentication.
-</ul>
-#code-yml#
-plugin_modules:
-  account:
-    plugin: 'wf/account2'
-    settings:
-      on_signin:
-        script: "location.href='/some/page';" 
-      on_activate:
-        script: "location.href='/some/page';"
-      allow:
-        signin: true
-        signin_method: null(email and username)/email/username
-        registration: true
-        change_email: true
-        change_password: true
-        two_factor_authentication: true
-        remember: false
-      two_factor_authentication:
-        key_timeout: 600
-      sms_pixie:
-        account: account_name
-        pwd: account_password
-        sender: max lenth of 11, can be anything
-      mysql:
-        server: 'localhost'
-        database: 'database_name'
-        user_name: 'my_username'
-        password: 'my_secret_password'
-      phpmailer:
-        SMTPAuth: 'true'
-        SMTPSecure: ssl
-        Port: '465'
-        SMTPDebug: '0'
-        Username: me@gmail.com
-        Password: 'my_secret_password'
-        Host: smtp.gmail.com
-        From: me@gmail.com
-        FromName: 'PluginWfAccount2'
-        To: me@world.com
-        Subject: 'Action of PluginWfAccount2'
-        Body: Body.
-        WordWrap: '255'
-_events:
-  _: If we want user to auto signin.
-  load_theme_config_settings_after:
-    -
-      plugin: 'wf/account2'
-      method: signin
-#code#
-*/
 class PluginWfAccount2{
   private $ajax = false;
   function __construct() {
@@ -561,8 +498,30 @@ class PluginWfAccount2{
     }
     exit(json_encode($json->get()));
   }
+  /**
+   * Validate password.
+   * @param string $password Password in db.
+   * @param string $post_password Password to validate.
+   * @return boolean True if password match.
+   */
   private function validatePassword($password, $post_password){
-    if(wfCrypt::isValid($post_password, $password) || $post_password==$password){
+    /**
+     * Crypt
+     */
+    $match_crypt = wfCrypt::isValid($post_password, $password);
+    /**
+     * Plain
+     * To prevent sign in with encrypted password we has to remove the space limiter.
+     */
+    $match_plain = false;
+    $post_password = str_replace(' ', '_', $post_password);
+    if($post_password==$password){
+      $match_plain = true;
+    }
+    /**
+     * 
+     */
+    if($match_crypt || $match_plain){
       return true;
     }else{
       return false;
