@@ -45,7 +45,13 @@ plugin_modules:
         Subject: 'Action of PluginWfAccount2'
         Body: Body.
         WordWrap: '255'
+      foreing_email_OPTIONAL:
+        table: memb_account
+        field: email
+        join: account_id
 ```
+
+Param foreing_email is used to get email from other table than account.email.
 
 ## Auto sign in
 To activate auto sign in set remember param along with signin event.

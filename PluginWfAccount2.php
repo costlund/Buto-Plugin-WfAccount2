@@ -579,7 +579,27 @@ class PluginWfAccount2{
     wfPlugin::includeonce('wf/mysql');
     $mysql = new PluginWfMysql();
     $mysql->open($settings->get('mysql'));
-    $rs = $mysql->runSql('select id, email, password, activated, phone, username from account;');
+    if($settings->get('foreing_email')){
+      $table = $settings->get('foreing_email/table');
+      $field = $settings->get('foreing_email/field');
+      $join = $settings->get('foreing_email/join');
+      $sql = <<<ABC
+        select 
+        a.id, 
+        f.$field as email, 
+        a.password, 
+        a.activated, 
+        a.phone, 
+        a.username 
+        from account as a
+        inner join $table as f on a.id=f.$join
+        ;
+ABC;
+              
+    }else{
+      $sql = "select id, email, password, activated, phone, username from account;";
+    }
+    $rs = $mysql->runSql($sql);
     return new PluginWfArray($rs['data']);
   }
   private function getUser($settings, $user_id){
