@@ -819,7 +819,9 @@ ABC;
    * If call signin page via ajax one has to include script.
    */
   public static function widget_include(){
-    $element = wfDocument::createHtmlElement('script', null, array('src' => '/plugin/wf/account2/include.js?x=2'));
+    $path = '/plugin/wf/account2/include.js';
+    $time = wfFilesystem::getFiletime(wfGlobals::getWebDir().$path);
+    $element = wfDocument::createHtmlElement('script', null, array('src' => '/plugin/wf/account2/include.js?x='.$time));
     wfDocument::renderElement(array($element));
   }
 }
