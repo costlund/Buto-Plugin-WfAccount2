@@ -507,8 +507,15 @@ class PluginWfAccount2{
   private function validatePassword($password, $post_password){
     /**
      * Crypt
+     * We check twice because of issue in method crypt().
+     * If user has password Test1234 i db and post Test123456 it will return true. When we also check Test12345 and it return true we now that first password is to long. 
      */
-    $match_crypt = wfCrypt::isValid($post_password, $password);
+    $match_crypt  = wfCrypt::isValid($post_password,          $password);
+    $post_password_truncate = substr($post_password, 0, strlen($post_password)-1);
+    $match_crypt2 = wfCrypt::isValid($post_password_truncate, $password);
+    if($match_crypt && $match_crypt2){
+      $match_crypt = false;
+    }
     /**
      * Plain
      * To prevent sign in with encrypted password we has to remove the space limiter.

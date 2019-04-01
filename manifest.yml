@@ -1,5 +1,8 @@
-version: '1.4'
+version: '1.5'
 history:
+  '1.5':
+    date: '2019-04-01'
+    description: Improvement in method validatePassword.
   '1.4':
     date: '2019-03-24'
     description: Improved warning layout and time param for js file.
