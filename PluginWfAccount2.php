@@ -514,7 +514,7 @@ class PluginWfAccount2{
     $post_password_truncate = substr($post_password, 0, strlen($post_password)-1);
     $match_crypt2 = wfCrypt::isValid($post_password_truncate, $password);
     if($match_crypt && $match_crypt2){
-      $match_crypt = false;
+      //$match_crypt = false;
     }
     /**
      * Plain
