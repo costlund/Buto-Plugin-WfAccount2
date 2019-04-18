@@ -721,7 +721,7 @@ ABC;
   }
   private function cookie_remember($settings, $user){
     if($settings->get('allow/remember')){
-      setcookie('wf_account2_1', $user->get('email')   , strtotime( '+30 days' ), "/");
+      setcookie('wf_account2_1', wfRequest::get('email')   , strtotime( '+30 days' ), "/");
       setcookie('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')), strtotime( '+30 days' ), "/");
     }
   }
