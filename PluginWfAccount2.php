@@ -165,6 +165,10 @@ class PluginWfAccount2{
     if($settings->get('allow/signin_method')=='email'){
       $form->set('items/email/validator/', array('plugin' => 'form/form_v1', 'method' => 'validate_email'));
     }
+    /**
+     * Set username.
+     */
+    $form->set('items/email/default', $this->cookie_get()->get('wf_account2_1'));
     return $form;
   }
   public function page_action(){
@@ -693,12 +697,14 @@ ABC;
   */
   public function page_signout(){
     wfEvent::run('signout');
+    $this->init_page();
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     /**
      * If we got the theme session we preserve it.
      */
     $theme = wfArray::get($_SESSION, 'theme');
     session_destroy();
-    $this->cookie_forget();
+    $this->cookie_forget($settings);
     if($theme){
       /**
        * If theme is set we start a new session with it.
@@ -714,8 +720,10 @@ ABC;
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     wfDocument::mergeLayout($page);
   }
-  private function cookie_forget(){
-    setcookie('wf_account2_1', '', time()-1000, "/");
+  private function cookie_forget($settings){
+    if(!$settings->get('allow/remember_signout_username')){
+      setcookie('wf_account2_1', '', time()-1000, "/");
+    }
     setcookie('wf_account2_2', '', time()-1000, "/");
     setcookie('wf_account2_3', '', time()-1000, "/");
   }
@@ -724,6 +732,9 @@ ABC;
       setcookie('wf_account2_1', wfRequest::get('email')   , strtotime( '+30 days' ), "/");
       setcookie('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')), strtotime( '+30 days' ), "/");
     }
+  }
+  private function cookie_get(){
+    return new PluginWfArray($_COOKIE);
   }
   /**
    * 

@@ -55,6 +55,7 @@ Param foreing_email is used to get email from other table than account.email.
 
 ## Auto sign in
 To activate auto sign in set remember param along with signin event.
+Set param remember_signout_username to remember username on sign out.
 
 ```
 plugin_modules:
@@ -63,6 +64,7 @@ plugin_modules:
     settings:
       allow:
         remember: true
+        remember_signout_username: true
 ```
 
 ```

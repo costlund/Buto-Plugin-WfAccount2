@@ -1,5 +1,8 @@
-version: '1.5'
+version: '1.6'
 history:
+  '1.6':
+    date: '2019-04-19'
+    description: Add param to remember username on sign out.
   '1.5':
     date: '2019-04-01'
     description: Improvement in method validatePassword.
