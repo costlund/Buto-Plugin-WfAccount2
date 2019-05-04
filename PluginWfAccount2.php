@@ -812,6 +812,21 @@ ABC;
     $users = $this->getUsers($settings);
     $this->sign_in($account_id, $users->get(), $settings);
   }
+  public function verify_account($data){
+    $data = new PluginWfArray($data);
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
+    $users = $this->getUsers($settings);
+    $user_id = $this->getUserId($users->get(), $data->get('username'));
+    if(!$user_id){
+      return null;
+    }else{
+      if($this->validatePassword($users->get($user_id.'/password'), $data->get('password'))){
+        return new PluginWfArray($users->get($user_id));
+      }else{
+        return null;
+      }
+    }
+  }
   /**
    * Get user roles from db.
    * @param type $key
