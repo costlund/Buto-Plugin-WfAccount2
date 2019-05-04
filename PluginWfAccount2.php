@@ -808,6 +808,7 @@ ABC;
    * @param type $account_id
    */
   public function sign_in_external($account_id){
+    unset($_SESSION['plugin']);
     $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
     $users = $this->getUsers($settings);
     $this->sign_in($account_id, $users->get(), $settings);
