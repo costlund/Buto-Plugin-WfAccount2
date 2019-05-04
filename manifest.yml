@@ -1,5 +1,8 @@
-version: '1.6'
+version: '1.7'
 history:
+  '1.7':
+    date: '2019-05-04'
+    description: Add method sign_in_external.
   '1.6':
     date: '2019-04-19'
     description: Add param to remember username on sign out.

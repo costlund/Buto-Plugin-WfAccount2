@@ -81,6 +81,13 @@ events:
 /plugin/wf/account2/mysql/schema.yml
 ```
 
+## Sign in external method
+
+```
+wfPlugin::includeonce('wf/account2');
+$obj = new PluginWfAccount2();
+$obj->sign_in_external('_a_account_id_');
+```
 
 
 

@@ -785,23 +785,32 @@ ABC;
   }
   /**
    * Set session params and run event signin.
-   * @param type $key
+   * @param type $account_id
    * @param type $users
    * @param type $settings
    */
-  public function sign_in($key, $users, $settings){
+  public function sign_in($account_id, $users, $settings){
     wfPlugin::includeonce('wf/array');
-    $user = new PluginWfArray($users[$key]);
+    $user = new PluginWfArray($users[$account_id]);
     $this->cookie_remember($settings, $user);
     $_SESSION['secure']=true;
     $_SESSION['email']=$user->get('email');
     $_SESSION['username']=$user->get('username');
-    $_SESSION['user_id']=$key;
-    $_SESSION['role'] = $this->get_roles($key, $settings);
+    $_SESSION['user_id']=$account_id;
+    $_SESSION['role'] = $this->get_roles($account_id, $settings);
     if($user->get('theme')){
       $_SESSION['theme'] = $user->get('theme');
     }
     wfEvent::run('signin');
+  }
+  /**
+   * Sign in via account_id.
+   * @param type $account_id
+   */
+  public function sign_in_external($account_id){
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
+    $users = $this->getUsers($settings);
+    $this->sign_in($account_id, $users->get(), $settings);
   }
   /**
    * Get user roles from db.
