@@ -11,7 +11,7 @@ function plugin_wf_account2(){
       div.style.marginTop = '10px';
       div.style.marginLeft = '0px';
       div.style.textAlign = 'left';
-      var body = document.getElementById(id_btn).parentNode.parentNode.getElementsByClassName('modal-body')[0];
+      var body = document.getElementById(id_btn.substr(0, id_btn.length-5));
       body.appendChild(div);
     }else{
       div = document.getElementById(id_btn+'_warning');
