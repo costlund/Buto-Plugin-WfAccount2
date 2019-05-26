@@ -735,7 +735,7 @@ ABC;
         setcookie('wf_account2_1', $user->get('username')   , strtotime( '+30 days' ), "/");
       }
       setcookie('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')), strtotime( '+30 days' ), "/");
-      setcookie('wf_account2_created_at', date('Y-m-d H:i:s'), strtotime( '+30 days' ), "/");
+      setcookie('wf_account2_created_at', date('ymdHis'), strtotime( '+30 days' ), "/");
     }
   }
   private function cookie_get(){
