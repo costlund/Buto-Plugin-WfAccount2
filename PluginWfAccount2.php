@@ -730,9 +730,25 @@ ABC;
   private function cookie_remember($settings, $user){
     if($settings->get('allow/remember')){
       if(wfRequest::get('email')){
+        /**
+         * Email could be username also.
+         */
         setcookie('wf_account2_1', wfRequest::get('email')   , strtotime( '+30 days' ), "/");
       }else{
-        setcookie('wf_account2_1', $user->get('username')   , strtotime( '+30 days' ), "/");
+        /**
+         * Check signin method...
+         */
+        if(!$settings->get('allow/signin_method')){
+          if($user->get('username')){
+            setcookie('wf_account2_1', $user->get('username')   , strtotime( '+30 days' ), "/");
+          }else{
+            setcookie('wf_account2_1', $user->get('email')   , strtotime( '+30 days' ), "/");
+          }
+        }elseif($settings->get('allow/signin_method')=='email'){
+          setcookie('wf_account2_1', $user->get('email')   , strtotime( '+30 days' ), "/");
+        }elseif($settings->get('allow/signin_method')=='username'){
+          setcookie('wf_account2_1', $user->get('username')   , strtotime( '+30 days' ), "/");
+        }
       }
       setcookie('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')), strtotime( '+30 days' ), "/");
       setcookie('wf_account2_created_at', date('ymdHis'), strtotime( '+30 days' ), "/");
