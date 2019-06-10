@@ -1,5 +1,6 @@
 client:
   'email': false
+  'username': false
   'password': false
 unknown:
   'signin': false

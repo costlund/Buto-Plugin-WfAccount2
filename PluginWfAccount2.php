@@ -123,6 +123,25 @@ class PluginWfAccount2{
     $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
     wfDocument::mergeLayout($page);
   }
+  public function page_username(){
+    $this->init_page();
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings());
+    $this->checkAllow($settings, 'change_username');
+    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
+    $page = new PluginWfYml(__DIR__.'/page/username.yml');
+    $form = new PluginWfYml('/plugin/wf/account2/form/username.yml');
+    $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
+    $form->setByTag(wfUser::getSession()->get());
+    /**
+     * Cancel button.
+     */
+    if($this->ajax){
+      $form->set('buttons/btn_cancel/attribute/href', '#!');
+      $form->set('buttons/btn_cancel/attribute/onclick', "$('.modal').modal('hide');");
+    }
+    $page->setByTag(array('form' => $form->get()));
+    wfDocument::mergeLayout($page->get());
+  }
   private function getFormSignin($settings){
     $form = new PluginWfYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/signin.yml');
     /**
@@ -193,6 +212,8 @@ class PluginWfAccount2{
       $form = $this->getFormSignin($settings);
     }elseif($action=='email' || $action=='email_verify'){
       $form = new PluginWfYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/email.yml');
+    }elseif($action=='username'){
+      $form = new PluginWfYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/username.yml');
     }elseif($action=='password'){
       $form = new PluginWfYml(wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/form/password.yml');
     }
@@ -451,6 +472,25 @@ class PluginWfAccount2{
           $this->log('email');
         }
       }
+    }elseif($action=='username' && wfUser::isSecure()){
+      $this->checkAllow($settings, 'change_username');
+      $f = new PluginFormForm_v1();
+      $f->data = $form->get();
+      $f->bindAndValidate();
+      $form->set(null, $f->data);
+      
+      //wfHelp::yml_dump($form, true);
+      
+      if(!$form->get('is_valid')){
+        $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
+      }else{
+        $this->db_account_update_username();
+        $_SESSION['username'] = wfRequest::get('username');
+        $script->set(true, 'location.reload()');
+        $json->set('success', true);
+        $json->set('script', $script->get());
+        $this->log('username');
+      }
     }elseif($action=='email_verify' && wfUser::isSecure()){
       $this->checkAllow($settings, 'change_email');
       $user = $this->getUser($settings, wfArray::get($_SESSION, 'user_id'));
@@ -626,6 +666,24 @@ ABC;
     $mysql->open($settings->get('mysql'));
     $test = $mysql->runSql($sql);
     return new PluginWfArray($test['data']);
+  }
+  private function db_account_update_username(){
+    wfPlugin::includeonce('wf/mysql');
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings());
+    $mysql = new PluginWfMysql();
+    $mysql->open($settings->get('mysql'));
+    $sql = new PluginWfYml(__DIR__.'/mysql/sql.yml', 'account_update_username');
+    $mysql->execute($sql->get());
+    return null;
+  }
+  private function db_account_username_exist(){
+    wfPlugin::includeonce('wf/mysql');
+    $settings = new PluginWfArray(wfPlugin::getModuleSettings());
+    $mysql = new PluginWfMysql();
+    $mysql->open($settings->get('mysql'));
+    $sql = new PluginWfYml(__DIR__.'/mysql/sql.yml', 'account_username_exist');
+    $mysql->execute($sql->get());
+    return $mysql->getOne();
   }
   /**
    * Send message if params To and Body is set in session.
@@ -875,6 +933,18 @@ ABC;
         $i18n = new PluginI18nTranslate_v1();
         $form = wfArray::set($form, "items/$field/is_valid", false);
         $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('Password does not match!'));
+      }
+    }
+    return $form;
+  }
+  public function validate_current_username($field, $form){
+    if(wfArray::get($form, "items/$field/is_valid")){
+      $exist = $this->db_account_username_exist();
+      if($exist->get('count')){
+        wfPlugin::includeonce('i18n/translate_v1');
+        $i18n = new PluginI18nTranslate_v1();
+        $form = wfArray::set($form, "items/$field/is_valid", false);
+        $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('Username is in usage!'));
       }
     }
     return $form;

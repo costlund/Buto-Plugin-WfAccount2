@@ -1,0 +1,15 @@
+account_update_username:
+  sql: update account set username=? where id='[user_id]';
+  params:
+    -
+      type: s
+      value: get:username
+account_username_exist:
+  sql: select count(username) from account where username=?;
+  select:
+    - count
+  params:
+    -
+      type: s
+      value: get:username
+  

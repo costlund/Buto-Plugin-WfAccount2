@@ -1,0 +1,27 @@
+url: _set_in_action_
+ajax: true
+submit_value: Change
+id: frm_account
+items:
+  username:
+    type: varchar
+    label: Username
+    default: rs:username
+    mandatory: true
+    placeholder: 'Text (4-20)'
+    validator:
+      -
+        plugin: wf/account2
+        method: validate_current_username
+  action:
+    type: hidden
+    label: action
+    mandatory: true
+    default: 'username'
+buttons:
+  btn_cancel:
+    type: a
+    innerHTML: Cancel
+    attribute:
+      href: '/'
+      class: 'btn btn-default'

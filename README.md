@@ -17,6 +17,7 @@ plugin_modules:
         signin_method: null(email and username)/email/username
         registration: true
         change_email: true
+        change_username: true
         change_password: true
         two_factor_authentication: true
         remember: false

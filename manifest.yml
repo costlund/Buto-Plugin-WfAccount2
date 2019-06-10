@@ -1,5 +1,8 @@
-version: '1.7'
+version: '1.8'
 history:
+  '1.8':
+    date: '2019-06-10'
+    description: Edit username.
   '1.7':
     date: '2019-05-04'
     description: Add method sign_in_external.
