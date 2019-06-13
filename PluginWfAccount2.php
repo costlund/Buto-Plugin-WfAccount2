@@ -786,6 +786,9 @@ ABC;
     setcookie('wf_account2_3', '', time()-1000, "/");
   }
   private function cookie_remember($settings, $user){
+    if(headers_sent()){
+      return null;
+    }
     if($settings->get('allow/remember')){
       if(wfRequest::get('email')){
         /**
@@ -811,6 +814,7 @@ ABC;
       setcookie('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')), strtotime( '+30 days' ), "/");
       setcookie('wf_account2_created_at', date('ymdHis'), strtotime( '+30 days' ), "/");
     }
+    return null;
   }
   private function cookie_get(){
     return new PluginWfArray($_COOKIE);
