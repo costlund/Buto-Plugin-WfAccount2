@@ -87,7 +87,7 @@ events:
 ```
 wfPlugin::includeonce('wf/account2');
 $obj = new PluginWfAccount2();
-$obj->sign_in_external('_a_account_id_');
+$obj->sign_in_external('_a_account_id_', '_optional_log_tag_');
 ```
 
 

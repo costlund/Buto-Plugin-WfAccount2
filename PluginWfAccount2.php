@@ -890,11 +890,16 @@ ABC;
    * Sign in via account_id.
    * @param type $account_id
    */
-  public function sign_in_external($account_id){
+  public function sign_in_external($account_id, $log_tag = null){
     unset($_SESSION['plugin']);
     $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
     $users = $this->getUsers($settings);
     $this->sign_in($account_id, $users->get(), $settings);
+    if(!$log_tag){
+      $this->log('sign_in_external');
+    }else{
+      $this->log($log_tag);
+    }
   }
   public function verify_account($data){
     $data = new PluginWfArray($data);
