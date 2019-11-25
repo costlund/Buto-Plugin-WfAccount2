@@ -1,37 +1,52 @@
-version: '1.9'
+version: '1.10.0'
 history:
-  '1.9':
+  '1.10.0':
+    date: '2019-11-25'
+    title: I18N
+    description: Using own i18n folder.
+  '1.9.0':
     date: '2019-06-17'
+    title: Log
     description: Add log to method sign_in_external.
-  '1.8':
+  '1.8.0':
     date: '2019-06-10'
+    title: Username
     description: Edit username.
-  '1.7':
+  '1.7.0':
     date: '2019-05-04'
+    title: Sign in external
     description: Add method sign_in_external.
-  '1.6':
+  '1.6.0':
     date: '2019-04-19'
+    title: Remember username
     description: Add param to remember username on sign out.
-  '1.5':
+  '1.5.0':
     date: '2019-04-01'
+    title: Validate password
     description: Improvement in method validatePassword.
-  '1.4':
+  '1.4.0':
     date: '2019-03-24'
+    title: Warning
     description: Improved warning layout and time param for js file.
-  '1.3':
+  '1.3.0':
     date: '2019-03-19'
+    title: Foreing email
     description: Add param foreing_email to be able to verify from other table than account.
   '1.2.1':
     date: '2019-03-07'
+    title: Security
     description: 'Security update to prevent sign in with crypted password string.'
-  '1.2':
+  '1.2.0':
     date: '2018-12-12'
+    title: Change plugin
     description: 'Use plugin form/form_v1 instead of wf/form_v2.'
-  '1.1':
+  '1.1.0':
     date: '2018-12-11'
+    title: CSS
     description: 'Minor css change for Bootstrap 4.'
-  '1.0':
+  '1.0.0':
     date: '2018-01-01'
+    title: First version
     description: 'First version.'
 plugin:
   -

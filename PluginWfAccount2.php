@@ -199,6 +199,10 @@ class PluginWfAccount2{
      * i18n.
      */
     $i18n = new PluginI18nTranslate_v1();
+    $i18n->path = '/plugin/wf/account2/i18n';
+    /**
+     * 
+     */
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $action = wfRequest::get('action');
     $script = new PluginWfArray();
@@ -940,8 +944,9 @@ ABC;
       if(!$this->validatePassword($users->get(wfArray::get($_SESSION, 'user_id').'/password'), wfArray::get($form, "items/$field/post_value"))){
         wfPlugin::includeonce('i18n/translate_v1');
         $i18n = new PluginI18nTranslate_v1();
+        $i18n->path = '/plugin/wf/account2/i18n';
         $form = wfArray::set($form, "items/$field/is_valid", false);
-        $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('Password does not match!'));
+        $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('Current password does not match!'));
       }
     }
     return $form;
@@ -952,6 +957,7 @@ ABC;
       if($exist->get('count')){
         wfPlugin::includeonce('i18n/translate_v1');
         $i18n = new PluginI18nTranslate_v1();
+        $i18n->path = '/plugin/wf/account2/i18n';
         $form = wfArray::set($form, "items/$field/is_valid", false);
         $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('Username is in usage!'));
       }
