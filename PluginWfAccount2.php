@@ -1,9 +1,15 @@
 <?php
 class PluginWfAccount2{
   private $ajax = false;
+  private $settings = null;
   function __construct() {
     wfPlugin::includeonce('form/form_v1');
     wfPlugin::enable('form/form_v1');
+    /**
+     * 
+     */
+    wfPlugin::includeonce('wf/array');
+    $this->settings = new PluginWfArray(wfPlugin::getModuleSettings());
   }
   /**
   Page with a create form.  
@@ -213,7 +219,7 @@ class PluginWfAccount2{
     /**
      * 
      */
-    $settings = new PluginWfArray(wfPlugin::getModuleSettings());
+    $settings = $this->settings;
     $action = wfRequest::get('action');
     $script = new PluginWfArray();
     $json = new PluginWfArray();
@@ -241,11 +247,17 @@ class PluginWfAccount2{
       if(!$form->get('is_valid')){
         $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
       }else{
-        $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
+        /**
+         * 
+         */
+        $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'), true);
+        /**
+         * 
+         */
         if(!$user_id){
-          // Create account.
           $user_id = wfCrypt::getUid();
-          $this->runSQL($settings, "insert into account (id, email, password) values ('$user_id', '".$form->get('items/email/post_value')."', '".wfCrypt::getHashAndSaltAsString($form->get('items/password/post_value'))."');");
+          $username = $this->get_username();
+          $this->runSQL($settings, "insert into account (id, email, password, username) values ('$user_id', '".$form->get('items/email/post_value')."', '".wfCrypt::getHashAndSaltAsString($form->get('items/password/post_value'))."', '".$username."');");
           $this->log('create', $user_id);
           wfEvent::run('account_create');
         }else{
@@ -254,6 +266,13 @@ class PluginWfAccount2{
           $this->log('recreate', $user_id);
           wfEvent::run('account_recreate');
         }
+        /**
+         * Get user
+         */
+        $user = $this->getUser($settings, $user_id);
+        /**
+         * 
+         */
         $this->runSQL($settings, "update account set activate_key='".$activate_key."' where id='$user_id';");
         // Script
         $script->set(true, 'document.getElementById(\'div_frm_account_email\').style.display=\'none\'');
@@ -268,7 +287,9 @@ class PluginWfAccount2{
         $json->set('script', $script->get());
         // Set params to send mail via page_sendmessage().
         $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $form->get('items/email/post_value'));
-        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $i18n->translateFromTheme('Key to activate account is:').' '.$activate_key);
+        $Body = $i18n->translateFromTheme('Key to activate account is:').' '.$activate_key.'<br>';
+        $Body .= $i18n->translateFromTheme('Your user name is:').' '.$user->get('username').'<br>';
+        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $Body);
       }
     }elseif($action=='activate'){
       $this->checkAllow($settings, 'registration');
@@ -280,7 +301,7 @@ class PluginWfAccount2{
       if(!$form->get('is_valid')){
         $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
       }else{
-        $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
+        $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'), true);
         if(!$user_id){
           $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('User is missing!')."');"));
         }else{
@@ -614,25 +635,35 @@ class PluginWfAccount2{
    * @param type $email
    * @return type
    */
-  private function getUserId($users, $email){
+  private function getUserId($users, $email, $activate = false){
     $user_id = null;
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $signin_method = $settings->get('allow/signin_method');
     foreach ($users as $key => $value) {
-      /**
-       * Check email.
-       */
-      if(!$signin_method || $signin_method=='email'){
-        if(strtolower($email)==strtolower(wfArray::get($value, 'email'))){
-          $user_id = $key;
-          break;
+      if(!$activate){
+        /**
+         * Check email.
+         */
+        if(!$signin_method || $signin_method=='email'){
+          if(strtolower($email)==strtolower(wfArray::get($value, 'email'))){
+            $user_id = $key;
+            break;
+          }
         }
-      }
-      /**
-       * Check username.
-       */
-      if(!$signin_method || $signin_method=='username'){
-        if($email==wfArray::get($value, 'username')){
+        /**
+         * Check username.
+         */
+        if(!$signin_method || $signin_method=='username'){
+          if($email==wfArray::get($value, 'username')){
+            $user_id = $key;
+            break;
+          }
+        }
+      }else{
+        /**
+         * Activate always with email
+         */
+        if(strtolower($email)==strtolower(wfArray::get($value, 'email'))){
           $user_id = $key;
           break;
         }
@@ -947,7 +978,32 @@ ABC;
     }
     return $temp;
   }
-  
+  private function get_username(){
+    /**
+     * Trying to generate and check if username is available a lot of times
+     */
+    for($i=0; $i<100; $i++){
+      $username = $this->generateRandomString(8);
+      if(!$this->username_exist($username)){
+        return $username;
+      }
+    }
+    /**
+     * We should not end up here.
+     */
+    throw new Exception(__CLASS__.' says: Could not generate new username in method get_username.');
+  }
+  private function generateRandomString($length = 10) {
+    return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyz', ceil($length/strlen($x)) )),1,$length);
+  }
+  private function username_exist($username){
+    $exist = $this->runSQL($this->settings, "select id as checking from account where username='$username';");
+    if($exist->get('0/checking')){
+      return true;
+    }else{
+      return false;
+    }
+  }
   public function validate_current_password($field, $form){
     // If field is valid we check if password match user.
     if(wfArray::get($form, "items/$field/is_valid")){
