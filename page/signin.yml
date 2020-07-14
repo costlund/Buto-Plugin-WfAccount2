@@ -38,6 +38,8 @@ content:
         innerHTML:
           -
             type: a
+            settings:
+              enabled: rs:ajax
             attribute:
               onclick: |
                 $('.modal').modal('hide'); 
@@ -45,6 +47,13 @@ content:
                 setTimeout(function(){
                   PluginWfBootstrapjs.modal({id: 'modal_account_create', url: '/account/create', lable: innerHTML, size: 'sm'});
                 }, 500, innerHTML);
+            innerHTML: Create account
+          -
+            type: a
+            settings:
+              disabled: rs:ajax
+            attribute:
+              href: '/account/create'
             innerHTML: Create account
           -
             type: i

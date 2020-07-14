@@ -91,4 +91,10 @@ $obj->sign_in_external('_a_account_id_', '_optional_log_tag_');
 ```
 
 
+## Links
 
+```
+/account/signin
+/account/signout
+/account/create
+```

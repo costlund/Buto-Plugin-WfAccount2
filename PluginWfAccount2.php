@@ -27,13 +27,11 @@ class PluginWfAccount2{
       $page = wfFilesystem::loadYml($filename);
       $page = wfArray::set($page, 'content/signin/innerHTML/signout/attribute/href', '/'.wfArray::get($GLOBALS, 'sys/class').'/signout');
       wfDocument::mergeLayout($page);
-      return null;
     }else{
       /**
        * 
        */
-      $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/create.yml';
-      $page = wfFilesystem::loadYml($filename);
+      $page = new PluginWfYml(__DIR__.'/page/create.yml');
       $form = new PluginWfYml('/plugin/wf/account2/form/create.yml');
       $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
       /**
@@ -46,9 +44,15 @@ class PluginWfAccount2{
       /**
        * 
        */
-      $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
-      wfDocument::mergeLayout($page);
-      return null;
+      $page->set('content/login_form/innerHTML/frm_login/data/data', $form->get());
+      /**
+       * 
+       */
+      $page->setByTag(array('ajax' => $this->ajax));
+      /**
+       * 
+       */
+      wfDocument::mergeLayout($page->get());
     }
   }
   private function checkAllow($settings, $type){
@@ -80,26 +84,32 @@ class PluginWfAccount2{
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'signin');
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
-    $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/signin.yml';
-    $page = wfFilesystem::loadYml($filename);
+    $page = new PluginWfYml(__DIR__.'/page/signin.yml');
     $form = $this->getFormSignin($settings);
     /**
      * Show create account button.
      */
     if($settings->get('allow/registration')){
-      $page = wfArray::set($page, 'content/create/settings/disabled', false);
+      $page->set('content/create/settings/disabled', false);
     }
     /**
      * 
      */
-    $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
+    $page->set('content/login_form/innerHTML/frm_login/data/data', $form->get());
     /**
      * Flash.
      */
     if(wfPlugin::flashHas('wf/account2', 'signin')){
-      $page = wfArray::set($page, 'content/flash/innerHTML', wfPlugin::flashGet('wf/account2', 'signin'));
+      $page->set('content/flash/innerHTML', wfPlugin::flashGet('wf/account2', 'signin'));
     }
-    wfDocument::mergeLayout($page);
+    /**
+     * 
+     */
+    $page->setByTag(array('ajax' => $this->ajax));
+    /**
+     * 
+     */
+    wfDocument::mergeLayout($page->get());
   }  
   public function page_email(){
     /**
@@ -628,6 +638,9 @@ class PluginWfAccount2{
         }
       }
     }
+    /**
+     * 
+     */
     return $user_id;
   }
   private function getUsers($settings){

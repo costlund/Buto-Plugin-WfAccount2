@@ -1,5 +1,9 @@
-version: 1.10.0
+version: 1.10.1
 history:
+  1.10.1:
+    date: '2020-07-14'
+    title: Links fix
+    description: 'Fix links when not in ajax mode.'
   1.10.0:
     date: '2019-11-25'
     title: I18N

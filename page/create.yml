@@ -38,6 +38,8 @@ content:
             innerHTML: Sign in
           -
             type: a
+            settings:
+              enabled: rs:ajax
             attribute:
               id: btn_goto_signin
               onclick: |
@@ -46,6 +48,14 @@ content:
                 setTimeout(function(){
                   PluginWfBootstrapjs.modal({id: 'modal_account_signin', url: '/account/signin', lable: innerHTML, size: 'sm'});
                 }, 500, innerHTML);
+            innerHTML: I already have an account
+          -
+            type: a
+            settings:
+              disabled: rs:ajax
+            attribute:
+              id: btn_goto_signin
+              href: '/account/signin'
             innerHTML: I already have an account
 
   
