@@ -34,7 +34,8 @@ content:
             type: span
             attribute:
               id: i18n_Sign_in
-              class: hide
+              style:
+                display: none
             innerHTML: Sign in
           -
             type: a
