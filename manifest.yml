@@ -1,5 +1,9 @@
-version: 1.10.3
+version: 1.10.4
 history:
+  1.10.4:
+    date: '2020-09-18'
+    title: 'Change username'
+    description: 'Change username should reload to start page.'
   1.10.3:
     date: '2020-08-30'
     title: 'Hide element'

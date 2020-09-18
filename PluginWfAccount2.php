@@ -521,7 +521,7 @@ class PluginWfAccount2{
       }else{
         $this->db_account_update_username();
         $_SESSION['username'] = wfRequest::get('username');
-        $script->set(true, 'location.reload()');
+        $script->set(true, "location.href='/'");
         $json->set('success', true);
         $json->set('script', $script->get());
         $this->log('username');
