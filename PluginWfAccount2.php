@@ -743,6 +743,9 @@ ABC;
     $json->set('success', false);
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     if(wfArray::get($_SESSION, 'plugin/wf/account/send_email/To') && wfArray::get($_SESSION, 'plugin/wf/account/send_email/Body')){
+      /**
+       * Email
+       */
       $phpmailer_settings = $settings->get('phpmailer');
       if(is_null($phpmailer_settings)){
         throw new Exception('Error in PluginWfAccount2::page_sendmessage, param phpmailer is not set.');
@@ -753,10 +756,15 @@ ABC;
       $phpmailer_settings->set('Body', wfArray::get($_SESSION, 'plugin/wf/account/send_email/Body'));
       wfPlugin::includeonce('wf/phpmailer');
       $wf_phpmailer = new PluginWfPhpmailer();
-      $wf_phpmailer->send($phpmailer_settings->get());
+      $result = $wf_phpmailer->send($phpmailer_settings->get());
+      $result = new PluginWfArray($result);
       $_SESSION = wfArray::setUnset($_SESSION, 'plugin/wf/account/send_email');
-      $json->set('success', true);
+      $json->set('success', $result->get('success'));
+      $json->set('alert', $result->get('alert'));
     }elseif(wfArray::get($_SESSION, 'plugin/wf/account/send_sms/To') && wfArray::get($_SESSION, 'plugin/wf/account/send_sms/Body')){
+      /**
+       * SMS
+       */
       $sms = new PluginWfArray(wfArray::get($_SESSION, 'plugin/wf/account/send_sms'));
       wfPlugin::includeonce('sms/pixie_v1');
       $default = new PluginWfArray();

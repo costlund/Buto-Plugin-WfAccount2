@@ -1,5 +1,9 @@
-version: 1.10.4
+version: 1.10.5
 history:
+  1.10.5:
+    date: '2020-09-29'
+    title: 'Send message'
+    description: 'Add error alert on send message.'
   1.10.4:
     date: '2020-09-18'
     title: 'Change username'
