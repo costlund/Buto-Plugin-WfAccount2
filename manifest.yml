@@ -1,5 +1,9 @@
-version: 1.10.5
+version: 1.11.0
 history:
+  1.11.0:
+    date: '2021-03-25'
+    title: 'Meta tag'
+    description: 'Add noindex meta tag using plugin meta/noindex.'
   1.10.5:
     date: '2020-09-29'
     title: 'Send message'
