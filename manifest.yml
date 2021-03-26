@@ -1,5 +1,9 @@
-version: 1.11.0
+version: 1.11.1
 history:
+  1.11.1:
+    date: '2021-03-26'
+    title: 'Meta tag'
+    description: 'Add plugin meta/noindex to manifest.'
   1.11.0:
     date: '2021-03-25'
     title: 'Meta tag'
@@ -97,6 +101,9 @@ plugin:
   -
     name: wf/phpmailer
     version: 1.2.0
+  -
+    name: meta/noindex
+    version: 1.0.1
 sys:
   -
     name: mercury
