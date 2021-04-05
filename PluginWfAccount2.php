@@ -116,7 +116,52 @@ class PluginWfAccount2{
      * 
      */
     wfDocument::mergeLayout($page->get());
-  }  
+  }
+  public function api_sign_in($email, $password, $settings){
+    /**
+     * users
+     */
+    $users = $this->getUsers($settings);
+    /**
+     * user_id
+     */
+    $user_id = $this->getUserId($users->get(), $email);
+    /**
+     * validate_password
+     */
+    $validate_password = $this->validatePassword($users->get($user_id.'/password'), $password);
+    /**
+     * activated
+     */
+    $activated = $users->get($user_id.'/activated');
+    /**
+     * result
+     */
+    $result = new PluginWfArray();
+    $result->set('validate_password', $validate_password);
+    $result->set('activated', $activated);
+    $result->set('email', null);
+    $result->set('username', null);
+    $result->set('user_id', null);
+    $result->set('role', null);
+    $result->set('rights', null);
+    /**
+     * sign_in
+     */
+    if($validate_password && $activated){
+      $this->sign_in($user_id, $users->get(), $settings);
+      $user = wfUser::getSession();
+      $result->set('email', $user->get('email'));
+      $result->set('username', $user->get('username'));
+      $result->set('user_id', $user->get('user_id'));
+      $result->set('role', $user->get('role'));
+      $result->set('rights', $user->get('rights'));
+    }
+    /**
+     * 
+     */
+    return $result->get();
+  }
   public function page_email(){
     /**
      * 
@@ -833,6 +878,20 @@ ABC;
     }
     wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
     wfDocument::mergeLayout($page);
+  }
+  public function api_sign_out($settings){
+    wfEvent::run('signout');
+    $theme = wfArray::get($_SESSION, 'theme');
+    $result = session_destroy();
+    $this->cookie_forget($settings);
+    if($theme){
+      /**
+       * If theme is set we start a new session with it.
+       */
+      session_start();
+      $_SESSION['theme'] = $theme;
+    }
+    return array('result' => $result);
   }
   private function cookie_forget($settings){
     if(!$settings->get('allow/remember_signout_username')){
