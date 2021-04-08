@@ -999,6 +999,14 @@ ABC;
     if($user->get('theme')){
       $_SESSION['theme'] = $user->get('theme');
     }
+    /**
+     * theme_data/version
+     */
+    $theme_manifest = new PluginWfYml('/theme/[theme]/config/manifest.yml');
+    wfUser::setSession('theme_data/version', $theme_manifest->get('version'));
+    /**
+     *
+     */
     wfEvent::run('signin');
   }
   /**
