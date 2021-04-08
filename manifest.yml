@@ -1,5 +1,9 @@
-version: 1.13.0
+version: 1.13.1
 history:
+  1.13.1:
+    date: '2021-04-07'
+    title: 'Theme version'
+    description: 'Add theme_data/version in method api_sign_in.'
   1.13.0:
     date: '2021-04-07'
     title: 'Theme version'

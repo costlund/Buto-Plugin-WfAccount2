@@ -145,6 +145,7 @@ class PluginWfAccount2{
     $result->set('user_id', null);
     $result->set('role', null);
     $result->set('rights', null);
+    $result->set('theme_data/version', null);
     /**
      * sign_in
      */
@@ -156,6 +157,7 @@ class PluginWfAccount2{
       $result->set('user_id', $user->get('user_id'));
       $result->set('role', $user->get('role'));
       $result->set('rights', $user->get('rights'));
+      $result->set('theme_data/version', $user->get('theme_data/version'));
     }
     /**
      * 
