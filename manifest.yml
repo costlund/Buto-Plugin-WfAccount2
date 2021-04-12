@@ -1,5 +1,9 @@
-version: 1.13.1
+version: 1.13.2
 history:
+  1.13.2:
+    date: '2021-04-12'
+    title: 'API sign out'
+    description: 'Add method session_unset in sign out method.'
   1.13.1:
     date: '2021-04-07'
     title: 'Theme version'

@@ -884,6 +884,7 @@ ABC;
   public function api_sign_out($settings){
     wfEvent::run('signout');
     $theme = wfArray::get($_SESSION, 'theme');
+    session_unset();
     $result = session_destroy();
     $this->cookie_forget($settings);
     if($theme){
