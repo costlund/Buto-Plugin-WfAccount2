@@ -1,5 +1,9 @@
-version: 1.13.2
+version: 1.13.3
 history:
+  1.13.3:
+    date: '2021-04-13'
+    title: 'API sign check'
+    descripiton: 'Add method api_sign_check.'
   1.13.2:
     date: '2021-04-12'
     title: 'API sign out'

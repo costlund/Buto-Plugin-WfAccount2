@@ -117,6 +117,19 @@ class PluginWfAccount2{
      */
     wfDocument::mergeLayout($page->get());
   }
+  public function api_sign_check(){
+    $result = new PluginWfArray();
+    if(wfUser::hasRole('client')){
+      $user = wfUser::getSession();
+      $result->set('email', $user->get('email'));
+      $result->set('username', $user->get('username'));
+      $result->set('user_id', $user->get('user_id'));
+      $result->set('role', $user->get('role'));
+      $result->set('rights', $user->get('rights'));
+      $result->set('theme_data/version', $user->get('theme_data/version'));
+    }
+    return $result->get();
+  }
   public function api_sign_in($email, $password, $settings){
     /**
      * users
@@ -138,8 +151,8 @@ class PluginWfAccount2{
      * result
      */
     $result = new PluginWfArray();
-    $result->set('validate_password', $validate_password);
-    $result->set('activated', $activated);
+    $result->set('process/validate_password', $validate_password);
+    $result->set('process/activated', $activated);
     $result->set('email', null);
     $result->set('username', null);
     $result->set('user_id', null);
@@ -885,7 +898,7 @@ ABC;
     wfEvent::run('signout');
     $theme = wfArray::get($_SESSION, 'theme');
     session_unset();
-    $result = session_destroy();
+    session_destroy();
     $this->cookie_forget($settings);
     if($theme){
       /**
@@ -894,7 +907,7 @@ ABC;
       session_start();
       $_SESSION['theme'] = $theme;
     }
-    return array('result' => $result);
+    return array();
   }
   private function cookie_forget($settings){
     if(!$settings->get('allow/remember_signout_username')){
