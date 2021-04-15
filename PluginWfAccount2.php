@@ -128,9 +128,17 @@ class PluginWfAccount2{
       $result->set('rights', $user->get('rights'));
       $result->set('theme_data/version', $user->get('theme_data/version'));
     }
-    return $result->get();
+    return array('data' => $result->get());
   }
   public function api_sign_in($email, $password, $settings){
+    /**
+     * 
+     */
+    if(!$email || !$password){
+      $error = array();
+      $error[] = array('message' => 'Some credentials are missing!');
+      return array('error' => $error);
+    }
     /**
      * users
      */
@@ -151,14 +159,6 @@ class PluginWfAccount2{
      * result
      */
     $result = new PluginWfArray();
-    $result->set('process/validate_password', $validate_password);
-    $result->set('process/activated', $activated);
-    $result->set('email', null);
-    $result->set('username', null);
-    $result->set('user_id', null);
-    $result->set('role', null);
-    $result->set('rights', null);
-    $result->set('theme_data/version', null);
     /**
      * sign_in
      */
@@ -175,7 +175,14 @@ class PluginWfAccount2{
     /**
      * 
      */
-    return $result->get();
+    $error = array();
+    if(!$validate_password){
+      $error[] = array('message' => 'Credentials seems to be wrong!');
+    }
+    if(!$activated && $validate_password){
+      $error[] = array('message' => 'There seems to be a problem with the account!');
+    }
+    return array('data' => $result->get(), 'error' => $error);
   }
   public function page_email(){
     /**
@@ -907,7 +914,7 @@ ABC;
       session_start();
       $_SESSION['theme'] = $theme;
     }
-    return array();
+    return array('data' => array());
   }
   private function cookie_forget($settings){
     if(!$settings->get('allow/remember_signout_username')){
