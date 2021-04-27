@@ -98,3 +98,9 @@ $obj->sign_in_external('_a_account_id_', '_optional_log_tag_');
 /account/signout
 /account/create
 ```
+
+## Data
+SQL to create a webmaster account.
+```
+/mysql/account_insert_webmaster.sql
+```
