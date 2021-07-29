@@ -34,6 +34,9 @@ tables:
         type: datetime
       cert_id:
         type: varchar(255)
+      language: 
+        description: 'If this has a value it should be set as session param i18n/language.'
+        type: varchar(5)
   account_log:
     _description: Account log.
     field:
