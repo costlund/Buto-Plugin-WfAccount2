@@ -756,14 +756,15 @@ class PluginWfAccount2{
         a.password, 
         a.activated, 
         a.phone, 
-        a.username 
+        a.username,
+        a.language 
         from account as a
         inner join $table as f on a.id=f.$join
         ;
 ABC;
               
     }else{
-      $sql = "select id, email, password, activated, phone, username from account;";
+      $sql = "select id, email, password, activated, phone, username, language from account;";
     }
     $rs = $mysql->runSql($sql);
     return new PluginWfArray($rs['data']);
@@ -1021,6 +1022,9 @@ ABC;
     $_SESSION['role'] = $this->get_roles($account_id, $settings);
     if($user->get('theme')){
       $_SESSION['theme'] = $user->get('theme');
+    }
+    if($user->get('language')){
+      $_SESSION['i18n']['language'] = $user->get('language');
     }
     /**
      * theme_data/version
