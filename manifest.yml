@@ -1,25 +1,29 @@
-version: 1.15.0
+version: 1.15.1
 history:
+  1.15.1:
+    date: '2021-08-05'
+    title: 'Manifest'
+    description: 'Typos in manifest.'
   1.15.0:
     date: '2021-07-29'
     title: 'Language'
-    descripiton: 'Add i18n/language to session if account.language has a value.'
+    description: 'Add i18n/language to session if account.language has a value.'
   1.14.0:
     date: '2021-07-29'
     title: 'Schema'
-    descripiton: 'Add account.language to schema.'
+    description: 'Add account.language to schema.'
   1.13.5:
     date: '2021-04-27'
     title: 'Readme'
-    descripiton: 'Add text about create account with SQL.'
+    description: 'Add text about create account with SQL.'
   1.13.4:
     date: '2021-04-15'
     title: 'API'
-    descripiton: 'Handel errors in api methods.'
+    description: 'Handel errors in api methods.'
   1.13.3:
     date: '2021-04-13'
     title: 'API sign check'
-    descripiton: 'Add method api_sign_check.'
+    description: 'Add method api_sign_check.'
   1.13.2:
     date: '2021-04-12'
     title: 'API sign out'
