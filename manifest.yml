@@ -1,5 +1,9 @@
-version: 1.15.1
+version: 1.15.2
 history:
+  1.15.2:
+    date: '2021-09-13'
+    title: 'I18N'
+    description: 'I18N improvements.'
   1.15.1:
     date: '2021-08-05'
     title: 'Manifest'

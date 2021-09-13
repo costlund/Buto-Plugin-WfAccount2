@@ -22,7 +22,6 @@ items:
         method: validate_current_username
   action:
     type: hidden
-    label: action
     mandatory: true
     default: 'username'
 buttons:

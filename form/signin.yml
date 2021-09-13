@@ -37,7 +37,6 @@ items:
       text: 'Check for the verification key who was sent to you.'
   action:
     type: hidden
-    label: action
     mandatory: true
     default: 'signin'
 success_redirect: /page/home

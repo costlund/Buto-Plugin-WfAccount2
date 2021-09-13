@@ -14,3 +14,4 @@ New password: Nytt lösenord
 Current password does not match!: Nuvarande lösenord matchar inte!
 'The key is incorrect!': 'Nyckeln är felaktig!'
 'Select where you want the key to be sent.': 'Välj vart ni vill att nyckeln skall skickas.'
+'Check for the verification key who was sent to you.': 'Kolla er epost efter verifikationsnyckel.'

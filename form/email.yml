@@ -32,7 +32,6 @@ items:
     container_style: 'display:none;'
   action:
     type: hidden
-    label: action
     mandatory: true
     default: 'email'
 success_redirect: /page/home
