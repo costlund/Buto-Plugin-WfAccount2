@@ -15,3 +15,6 @@ Current password does not match!: Nuvarande lösenord matchar inte!
 'The key is incorrect!': 'Nyckeln är felaktig!'
 'Select where you want the key to be sent.': 'Välj vart ni vill att nyckeln skall skickas.'
 'Check for the verification key who was sent to you.': 'Kolla er epost efter verifikationsnyckel.'
+Change: 'Ändra'
+'Password must have at lest one uppercase, lowercase, number and a minimum length of 8!': 'Lösenord måste ha minst en stor bokstav, liten bokstav, nummer och minsta längd är 8 tecken!'
+
