@@ -164,6 +164,7 @@ class PluginWfAccount2{
      */
     if($validate_password && $activated){
       $this->sign_in($user_id, $users->get(), $settings);
+      $this->log('signin', null, $settings);
       $user = wfUser::getSession();
       $result->set('email', $user->get('email'));
       $result->set('username', $user->get('username'));
@@ -680,8 +681,16 @@ class PluginWfAccount2{
       return false;
     }
   }
-  private function log($type, $user_id = null){
-    $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
+  /**
+   * Log into db.account_log.
+   * @param string $type
+   * @param string $user_id
+   * @param mixed $settings Null or PluginWfArray object.
+   */
+  private function log($type, $user_id = null, $settings = null){
+    if(is_null($settings)){
+      $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
+    }
     wfPlugin::includeonce('wf/mysql');
     $mysql = new PluginWfMysql();
     $mysql->open($settings->get('mysql'));
