@@ -1,5 +1,9 @@
-version: 1.16.0
+version: 1.16.1
 history:
+  1.16.1:
+    date: '2021-10-18'
+    title: 'Code'
+    description: 'Code declaration.'
   1.16.0:
     date: '2021-10-18'
     title: 'Log'

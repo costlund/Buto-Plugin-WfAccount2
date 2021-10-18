@@ -707,9 +707,9 @@ class PluginWfAccount2{
   }
   /**
    * Get user id.
-   * @param type $users
-   * @param type $email
-   * @return type
+   * @param array $users
+   * @param string $email
+   * @return string
    */
   private function getUserId($users, $email, $activate = false){
     $user_id = null;
