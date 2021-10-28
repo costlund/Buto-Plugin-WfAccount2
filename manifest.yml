@@ -1,5 +1,9 @@
-version: 1.16.2
+version: 1.17.0
 history:
+  1.17.0:
+    date: '2021-10-28'
+    title: Cookies
+    description: 'Add plugin php/cookie to handle cookies.'
   1.16.2:
     date: '2021-10-27'
     title: Versions
@@ -164,6 +168,9 @@ plugin:
   -
     name: meta/noindex
     version: 1.0.1
+  -
+    name: php/cookie
+    version: 1.0.0
 sys:
   -
     name: mercury

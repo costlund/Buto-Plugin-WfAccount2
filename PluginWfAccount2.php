@@ -927,40 +927,56 @@ ABC;
     return array('data' => array());
   }
   private function cookie_forget($settings){
+    /**
+     * 
+     */
+    wfPlugin::includeonce('php/cookie');
+    $cookie = new PluginPhpCookie();
+    /**
+     * 
+     */
     if(!$settings->get('allow/remember_signout_username')){
-      setcookie('wf_account2_1', '', time()-1000, "/");
+      $cookie->del('wf_account2_1');
     }
-    setcookie('wf_account2_2', '', time()-1000, "/");
-    setcookie('wf_account2_3', '', time()-1000, "/");
+    $cookie->del('wf_account2_2');
+    $cookie->del('wf_account2_3');
   }
   private function cookie_remember($settings, $user){
     if(headers_sent()){
       return null;
     }
+    /**
+     * 
+     */
+    wfPlugin::includeonce('php/cookie');
+    $cookie = new PluginPhpCookie();
+    /**
+     * 
+     */
     if($settings->get('allow/remember')){
       if(wfRequest::get('email')){
         /**
          * Email could be username also.
          */
-        setcookie('wf_account2_1', wfRequest::get('email')   , strtotime( '+30 days' ), "/");
+        $cookie->set('wf_account2_1', wfRequest::get('email'));
       }else{
         /**
          * Check signin method...
          */
         if(!$settings->get('allow/signin_method')){
           if($user->get('username')){
-            setcookie('wf_account2_1', $user->get('username')   , strtotime( '+30 days' ), "/");
+            $cookie->set('wf_account2_1', $user->get('username'));
           }else{
-            setcookie('wf_account2_1', $user->get('email')   , strtotime( '+30 days' ), "/");
+            $cookie->set('wf_account2_1', $user->get('email'));
           }
         }elseif($settings->get('allow/signin_method')=='email'){
-          setcookie('wf_account2_1', $user->get('email')   , strtotime( '+30 days' ), "/");
+          $cookie->set('wf_account2_1', $user->get('email'));
         }elseif($settings->get('allow/signin_method')=='username'){
-          setcookie('wf_account2_1', $user->get('username')   , strtotime( '+30 days' ), "/");
+          $cookie->set('wf_account2_1', $user->get('username'));
         }
       }
-      setcookie('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')), strtotime( '+30 days' ), "/");
-      setcookie('wf_account2_created_at', date('ymdHis'), strtotime( '+30 days' ), "/");
+      $cookie->set('wf_account2_2', wfCrypt::getHashAndSaltAsString($user->get('password')));
+      $cookie->set('wf_account2_created_at', date('ymdHis'));
     }
     return null;
   }
@@ -993,12 +1009,17 @@ ABC;
       return null;
     }
     /**
+     * 
+     */
+    wfPlugin::includeonce('php/cookie');
+    $cookie = new PluginPhpCookie();
+    /**
      *  Check if user match by email. 
      */
     $users = $this->getUsers($settings);
     $user_id = $this->getUserId($users->get(), $_COOKIE['wf_account2_1']);
     if(!$user_id){
-      setcookie('wf_account2_3', '1', strtotime( '+30 days' ), "/");
+      $cookie->set('wf_account2_3', '1');
       return null;
     }
     /**
@@ -1011,7 +1032,7 @@ ABC;
       /**
        * Set cookie to not try again on failure.
        */
-      setcookie('wf_account2_3', '1', strtotime( '+30 days' ), "/");
+      $cookie->set('wf_account2_3', '1');
     }
   }
   /**
