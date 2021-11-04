@@ -1044,6 +1044,7 @@ ABC;
   public function sign_in($account_id, $users, $settings){
     wfPlugin::includeonce('wf/array');
     $user = new PluginWfArray($users[$account_id]);
+    $this->cookie_forget($settings);
     $this->cookie_remember($settings, $user);
     $_SESSION['secure']=true;
     $_SESSION['email']=$user->get('email');

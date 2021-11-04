@@ -1,5 +1,9 @@
-version: 1.17.0
+version: 1.18.0
 history:
+  1.18.0:
+    date: '2021-11-04'
+    title: Cookies
+    description: 'Forget cookies on sign in due to auto login issues.'
   1.17.0:
     date: '2021-10-28'
     title: Cookies
