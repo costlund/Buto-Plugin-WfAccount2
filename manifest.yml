@@ -1,5 +1,9 @@
-version: 1.18.1
+version: 1.19.0
 history:
+  1.19.0:
+    date: '2021-12-15'
+    title: Sign in role
+    description: 'One could restrict sign in due to roles and date.'
   1.18.1:
     date: '2021-11-04'
     title: Versions

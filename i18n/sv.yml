@@ -17,4 +17,4 @@ Current password does not match!: Nuvarande lösenord matchar inte!
 'Check for the verification key who was sent to you.': 'Kolla er epost efter verifikationsnyckel.'
 Change: 'Ändra'
 'Password must have at lest one uppercase, lowercase, number and a minimum length of 8!': 'Lösenord måste ha minst en stor bokstav, liten bokstav, nummer och minsta längd är 8 tecken!'
-
+'You are not able to sign in due to role restriction.': 'Ni kan inte logga in på grund av rollbegränsningar.'

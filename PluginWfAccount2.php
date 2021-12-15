@@ -417,8 +417,12 @@ class PluginWfAccount2{
           $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Username or password does not match!')."');"));
         }else{
           if($this->validatePassword($users->get($user_id.'/password'), $form->get('items/password/post_value'))){
+            $users->set("$user_id/roles", $this->get_roles($user_id, $settings));
+            $users->set("$user_id/signin_role", $this->get_signin_role($users, $user_id, $settings));
             if(!$users->get($user_id.'/activated')){
               $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('User is not activated!')."');"));
+            }elseif($users->get($user_id.'/signin_role')){
+              $json->set('script', array("alert('".$i18n->translateFromTheme('You are not able to sign in due to role restriction.')."');"));
             }else{
               if(!$settings->get('allow/two_factor_authentication')){
                 /**
@@ -1110,6 +1114,62 @@ ABC;
       $temp[] = $value2['role'];
     }
     return $temp;
+  }
+  private function get_signin_role($users, $user_id, $settings){
+    /**
+     * Restrict is true as default.
+     */
+    $return = true;
+    /*
+     * allow/signin_role (if set)
+     */
+    if($settings->get('allow/signin_role')){
+      /*
+       * Set date/from, date/to if not set.
+       */
+      if(!$settings->get('allow/signin_role/date/from')){
+        $settings->set('allow/signin_role/date/from', date('Y-m-d'));
+      }
+      if(!$settings->get('allow/signin_role/date/to')){
+        $settings->set('allow/signin_role/date/to', date('Y-m-d').' 23:59:59');
+      }
+      /*
+       * Convert date to time.
+       */
+      $settings->set('allow/signin_role/time/from', strtotime($settings->get('allow/signin_role/date/from')));
+      $settings->set('allow/signin_role/time/now', time());
+      $settings->set('allow/signin_role/time/to', strtotime($settings->get('allow/signin_role/date/to')));
+      /*
+       * If time/now between time/from and time/to.
+       */
+      if(
+        $settings->get('allow/signin_role/time/from') <= $settings->get('allow/signin_role/time/now') && 
+        $settings->get('allow/signin_role/time/to') >= $settings->get('allow/signin_role/time/now')){
+        if($settings->get('allow/signin_role/roles') && $users->get($user_id.'/roles')){
+          foreach($settings->get('allow/signin_role/roles') as $v){
+            $i = array_search($v, $users->get($user_id.'/roles'));
+            if(strlen($i)){
+              /**
+               * Find a role match.
+               */
+              $return = false;
+              break;
+            }
+          }
+        }
+      }else{
+        /**
+         * No restriction due to time not match.
+         */
+        $return = false;
+      }
+    }else{
+      /**
+        * No settings.
+        */
+      $return = false;
+    }
+    return $return;
   }
   private function get_username(){
     /**
