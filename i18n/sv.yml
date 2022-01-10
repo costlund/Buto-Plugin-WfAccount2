@@ -18,3 +18,4 @@ Current password does not match!: Nuvarande lösenord matchar inte!
 Change: 'Ändra'
 'Password must have at lest one uppercase, lowercase, number and a minimum length of 8!': 'Lösenord måste ha minst en stor bokstav, liten bokstav, nummer och minsta längd är 8 tecken!'
 'You are not able to sign in due to role restriction.': 'Ni kan inte logga in på grund av rollbegränsningar.'
+'You are already signed in!': 'Ni är redan inloggad!'

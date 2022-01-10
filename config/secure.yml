@@ -2,6 +2,7 @@ client:
   'email': false
   'username': false
   'password': false
+  'signin': false
 unknown:
   'signin': false
   'create': false

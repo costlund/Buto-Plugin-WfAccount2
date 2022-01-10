@@ -1,5 +1,9 @@
-version: 1.19.1
+version: 1.20.0
 history:
+  1.20.0:
+    date: '2022-01-10'
+    title: 'Sign in form'
+    description: 'When go to sign in form and already are signed in thrown an error.'
   1.19.1:
     date: '2022-01-03'
     title: Versions

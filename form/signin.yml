@@ -47,6 +47,19 @@ buttons:
     attribute:
       href: '/'
       class: 'btn btn-default'
+elements_above:
+  -
+    type: div
+    settings:
+      role:
+        item:
+          - client
+    attribute:
+      class: alert alert-warning
+    innerHTML: 
+      -
+        type: span
+        innerHTML: You are already signed in!
 elements_below:
   -
     type: script
