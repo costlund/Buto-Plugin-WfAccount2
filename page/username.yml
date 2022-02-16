@@ -2,7 +2,7 @@ settings:
   layout:
     - html
     - main
-  title: Account | Username
+  title: Username
 content:
   login_form:
     type: div

@@ -9,7 +9,7 @@ settings:
   layout:
     - html
     - main
-  title: Account | Create
+  title: Create account
 content:
   login_form:
     type: div

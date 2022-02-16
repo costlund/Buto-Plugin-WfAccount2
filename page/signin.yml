@@ -9,7 +9,7 @@ settings:
   layout:
     - html
     - main
-  title: Account | Sign in
+  title: Sign in
 content:
   flash:
     type: div
