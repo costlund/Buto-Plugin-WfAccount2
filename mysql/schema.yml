@@ -37,6 +37,8 @@ tables:
       language: 
         description: 'If this has a value it should be set as session param i18n/language.'
         type: varchar(5)
+      fullname:
+        type: varchar(255)
   account_log:
     _description: Account log.
     field:
