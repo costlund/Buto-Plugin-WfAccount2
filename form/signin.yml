@@ -60,7 +60,7 @@ elements_above:
       -
         type: span
         innerHTML: You are already signed in!
-elements_below:
+elements_after:
   -
     type: script
     innerHTML: "document.getElementById('frm_account_email').focus();"
