@@ -1,5 +1,9 @@
-version: 1.21.3
+version: 1.22.0
 history:
+  1.22.0:
+    date: '2022-08-17'
+    title: Password
+    description: 'Add checkbox to toogle password visibility in form signin and password. Add extra New password in password form to avoid misspelling.'
   1.21.3:
     date: '2022-07-20'
     title: Versions

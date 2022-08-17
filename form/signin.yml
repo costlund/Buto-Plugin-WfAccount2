@@ -20,6 +20,11 @@ items:
     label: Password
     mandatory: true
     default: 
+  show_password:
+    type: checkbox
+    label: Show password
+    attribute:
+      onclick: PluginWfAccount2.toogle_signin(this)
   two_factor_authentication:
     type: hidden
     label: Two-factor authentication

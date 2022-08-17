@@ -585,9 +585,6 @@ class PluginWfAccount2{
       $f->data = $form->get();
       $f->bindAndValidate();
       $form->set(null, $f->data);
-      
-      //wfHelp::yml_dump($form, true);
-      
       if(!$form->get('is_valid')){
         $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$f->getErrors()."');"));
       }else{
@@ -642,8 +639,9 @@ class PluginWfAccount2{
           $json->set('script', array($settings->get('on_signin/script')));
         }else{
           $json->set('script', array("location.href='/';"));
-        }              
-        $this->runSQL($settings, "update account set password='".wfCrypt::getHashAndSaltAsString( $form->get('items/new_password/post_value'))."' where id='".wfArray::get($_SESSION, 'user_id')."';");
+        }
+        $sql = "update account set password='".wfCrypt::getHashAndSaltAsString( $form->get('items/new_password/post_value'))."' where id='".wfArray::get($_SESSION, 'user_id')."';";
+        $this->runSQL($settings, $sql);
         $this->log('password');
       }
     }
@@ -657,16 +655,9 @@ class PluginWfAccount2{
    */
   private function validatePassword($password, $post_password){
     /**
-     * Crypt
-     * We check twice because of issue in method crypt().
-     * If user has password Test1234 i db and post Test123456 it will return true. When we also check Test12345 and it return true we now that first password is to long. 
+     * match_crypt
      */
     $match_crypt  = wfCrypt::isValid($post_password,          $password);
-    $post_password_truncate = substr($post_password, 0, strlen($post_password)-1);
-    $match_crypt2 = wfCrypt::isValid($post_password_truncate, $password);
-    if($match_crypt && $match_crypt2){
-      //$match_crypt = false;
-    }
     /**
      * Plain
      * To prevent sign in with encrypted password we has to remove the space limiter.
@@ -1209,6 +1200,20 @@ ABC;
         $i18n->path = '/plugin/wf/account2/i18n';
         $form = wfArray::set($form, "items/$field/is_valid", false);
         $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('Current password does not match!'));
+      }
+    }
+    return $form;
+  }
+  public function validate_new_password($field, $form){
+    // If field is valid we check if new passwords match.
+    if(wfArray::get($form, "items/$field/is_valid")){
+      wfPlugin::includeonce('wf/array');
+      if(wfArray::get($form, "items/$field/post_value")!=wfArray::get($form, "items/new_password_again/post_value")){
+        wfPlugin::includeonce('i18n/translate_v1');
+        $i18n = new PluginI18nTranslate_v1();
+        $i18n->path = '/plugin/wf/account2/i18n';
+        $form = wfArray::set($form, "items/$field/is_valid", false);
+        $form = wfArray::set($form, "items/$field/errors/", $i18n->translateFromTheme('New passwords does not match!'));
       }
     }
     return $form;

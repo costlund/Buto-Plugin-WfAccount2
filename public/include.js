@@ -28,5 +28,23 @@ function plugin_wf_account2(){
       div.innerHTML = str;
     }
   }
+  this.toogle_password = function(e){
+    if(e.checked){
+      document.getElementById('frm_account_current_password').type = "text";
+      document.getElementById('frm_account_new_password').type = "text";
+      document.getElementById('frm_account_new_password_again').type = "text";
+    }else{
+      document.getElementById('frm_account_current_password').type = "password";
+      document.getElementById('frm_account_new_password').type = "password";
+      document.getElementById('frm_account_new_password_again').type = "password";
+    }
+  }
+  this.toogle_signin = function(e){
+    if(e.checked){
+      document.getElementById('frm_account_password').type = "text";
+    }else{
+      document.getElementById('frm_account_password').type = "password";
+    }
+  }
 }
 PluginWfAccount2 = new plugin_wf_account2();
