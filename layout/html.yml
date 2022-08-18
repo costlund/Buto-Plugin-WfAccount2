@@ -8,6 +8,9 @@ settings:
       key: 'sys/settings/plugin/wf/callbackjson/enabled'
       value: true
     -
+      key: 'sys/settings/plugin/wf/account2/enabled'
+      value: true
+    -
       key: 'sys/settings/plugin/form/form_v1/enabled'
       value: true
     -
@@ -44,9 +47,10 @@ content:
               plugin: 'wf/callbackjson'
               method: include
           -
-            type: script
-            attribute:
-              src: '/plugin/wf/account2/include.js?x=1'
+            type: widget
+            data:
+              plugin: 'wf/account2'
+              method: include
           -
             type: widget
             data:
