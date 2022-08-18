@@ -460,6 +460,7 @@ class PluginWfAccount2{
                    */
                   $script->set(true, "document.getElementById('div_frm_account_email').style.display='none';");
                   $script->set(true, "document.getElementById('div_frm_account_password').style.display='none';");
+                  $script->set(true, "document.getElementById('div_frm_account_show_password').style.display='none';");
                   $script->set(true, "document.getElementById('div_frm_account_two_factor_authentication').style.display='none';");
                   $script->set(true, "document.getElementById('div_frm_account_two_factor_authentication_key').style.display='';");
                   $script->set(true, "document.getElementById('frm_account_action').value='two_factor_authentication';");
