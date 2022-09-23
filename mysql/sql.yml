@@ -12,4 +12,22 @@ account_username_exist:
     -
       type: s
       value: get:username
-  
+account_details:
+  sql: |
+    select 
+    (select count(*)                    from account_log where account_id=account.id                                                                           ) as log_count_except_this,
+    (select created_at                  from account_log where account_id=account.id and left(created_at, 10)<>left(now(), 10) order by created_at desc limit 1) as last_login_before_today,
+    (select datediff(now(), created_at) from account_log where account_id=account.id and left(created_at, 10)<>left(now(), 10) order by created_at desc limit 1) as days_login_before_today
+    from account where id='[user_id]'
+  select:
+    - log_count_except_this
+    - last_login_before_today
+    - days_login_before_today
+account_roles:
+  sql: select role from account_role where account_id=?
+  select:
+    - role
+  params:
+    -
+      type: s
+      value: rs:account_id

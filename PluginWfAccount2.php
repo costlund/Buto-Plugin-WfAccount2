@@ -1047,6 +1047,7 @@ ABC;
     $_SESSION['username']=$user->get('username');
     $_SESSION['user_id']=$account_id;
     $_SESSION['role'] = $this->get_roles($account_id, $settings);
+    $_SESSION['details'] = $this->db_account_details($settings)->get();
     if($user->get('theme')){
       $_SESSION['theme'] = $user->get('theme');
     }
@@ -1099,13 +1100,32 @@ ABC;
    * @param type $settings
    * @return type
    */
-  private function get_roles($key, $settings){
-    $role = $this->runSQL($settings, "select role from account_role where account_id='$key';");
+  private function get_roles($account_id, $settings){
+    $role = $this->db_account_roles($account_id, $settings);
     $temp = array();
-    foreach ($role->get() as $key2 => $value2) {
+    foreach ($role as $key2 => $value2) {
       $temp[] = $value2['role'];
     }
     return $temp;
+  }
+  private function db_account_roles($account_id, $settings){
+    wfPlugin::includeonce('wf/mysql');
+    $mysql = new PluginWfMysql();
+    $mysql->open($settings->get('mysql'));
+    $sql = new PluginWfYml(__DIR__.'/mysql/sql.yml', 'account_roles');
+    $sql->setByTag(array('account_id' => $account_id));
+    $mysql->execute($sql->get());
+    $rs = $mysql->getMany();
+    return $rs;
+  }
+  private function db_account_details($settings){
+    wfPlugin::includeonce('wf/mysql');
+    $mysql = new PluginWfMysql();
+    $mysql->open($settings->get('mysql'));
+    $sql = new PluginWfYml(__DIR__.'/mysql/sql.yml', 'account_details');
+    $mysql->execute($sql->get());
+    $rs = $mysql->getOne();
+    return $rs;
   }
   private function get_signin_role($users, $user_id, $settings){
     /**

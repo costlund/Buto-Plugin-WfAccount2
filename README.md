@@ -118,3 +118,20 @@ SQL to create a webmaster account.
 ```
 /mysql/account_insert_webmaster.sql
 ```
+
+## Session data
+```
+secure: true
+email: _
+username: _
+user_id: _
+role:
+  - webmaster
+  - webadmin
+details:
+  log_count_except_this: 2
+  last_login_before_today: null
+  days_login_before_today: null
+theme_data:
+  version: 1.36.0
+```
