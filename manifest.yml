@@ -1,5 +1,9 @@
-version: 1.23.2
+version: 1.23.3
 history:
+  1.23.3:
+    date: '2022-10-13'
+    title: Versions
+    description: 'Versions update.'
   1.23.2:
     date: '2022-10-13'
     title: Schema
@@ -219,7 +223,7 @@ history:
 plugin:
   -
     name: form/form_v1
-    version: 1.54.2
+    version: 1.56.0
   -
     name: wf/array
     version: 1.2.4
@@ -234,7 +238,7 @@ plugin:
     version: 1.14.9
   -
     name: sms/pixie_v1
-    version: 1.6.1
+    version: 1.6.2
   -
     name: twitter/bootstrap335v
     version: 1.0.1
@@ -243,7 +247,7 @@ plugin:
     version: 1.4.0
   -
     name: meta/noindex
-    version: 1.0.2
+    version: 1.0.3
   -
     name: php/cookie
     version: 1.0.0
