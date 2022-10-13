@@ -6,55 +6,55 @@ tables:
         type: varchar(50)
         not_null: true
         primary_key: true
-      email: 
+      email:
         type: varchar(255)
       username:
         type: varchar(50)
-      password: 
+      password:
         type: varchar(255)
-      activated: 
+      activated:
         type: int(11)
-      activate_key: 
+      activate_key:
         type: varchar(50)
-      activate_password: 
+      activate_password:
         type: varchar(255)
-      activate_date: 
+      activate_date:
         type: datetime
-      change_email_email: 
+      change_email_email:
         type: varchar(255)
-      change_email_key: 
+      change_email_key:
         type: varchar(50)
-      change_email_date: 
+      change_email_date:
         type: datetime
       phone:
         type: varchar(255)
-      two_factor_authentication_key: 
+      two_factor_authentication_key:
         type: varchar(50)
-      two_factor_authentication_date: 
+      two_factor_authentication_date:
         type: datetime
       cert_id:
         type: varchar(255)
-      language: 
+      language:
         description: 'If this has a value it should be set as session param i18n/language.'
         type: varchar(5)
       fullname:
         type: varchar(255)
   account_log:
-    _description: Account log.
+    _description: 'Account log.'
     field:
       id:
         type: int(16)
         not_null: true
         auto_increment: true
-        primary_key: true        
-      account_id: 
+        primary_key: true
+      account_id:
         type: varchar(50)
         foreing_key:
           reference_table: account
           reference_field: id
           on_delete: CASCADE
-          on_update: CASCADE        
-      type: 
+          on_update: CASCADE
+      type:
         type: varchar(50)
       date:
         type: datetime
@@ -65,24 +65,25 @@ tables:
       session_id:
         type: varchar(255)
   account_role:
-    _description: Account roles.
+    _description: 'Account roles.'
     field:
       id:
         type: int(16)
         not_null: true
         auto_increment: true
-        primary_key: true        
-      account_id: 
+        primary_key: true
+      account_id:
         type: varchar(50)
         foreing_key:
           reference_table: account
           reference_field: id
           on_delete: CASCADE
           on_update: CASCADE
+        description: ''
       role:
         type: varchar(50)
 extra:
-  _description: Extra field to add to each table if not exist in schema.
+  _description: 'Extra field to add to each table if not exist in schema.'
   field:
     created_at:
       type: timestamp
@@ -93,8 +94,3 @@ extra:
       type: varchar(50)
     updated_by:
       type: varchar(50)
-      
-        
-        
-        
-        
