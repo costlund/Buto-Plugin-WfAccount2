@@ -1,5 +1,9 @@
-version: 1.23.3
+version: 1.24.0
 history:
+  1.24.0:
+    date: '2022-10-28'
+    title: Pid
+    description: 'Add new field account.pid in schema.'
   1.23.3:
     date: '2022-10-13'
     title: Versions

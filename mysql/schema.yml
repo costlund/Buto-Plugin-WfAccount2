@@ -39,6 +39,8 @@ tables:
         type: varchar(5)
       fullname:
         type: varchar(255)
+      pid:
+        type: varchar(255)
   account_log:
     _description: 'Account log.'
     field:
