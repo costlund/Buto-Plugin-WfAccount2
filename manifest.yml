@@ -4,6 +4,7 @@ history:
     date: '2022-10-28'
     title: Pid
     description: 'Add new field account.pid in schema.'
+    webmaster: 'ALTER TABLE account ADD COLUMN pid VARCHAR(255) NULL;'
   1.23.3:
     date: '2022-10-13'
     title: Versions
