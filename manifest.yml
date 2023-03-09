@@ -1,5 +1,9 @@
-version: 1.24.2
+version: 1.24.3
 history:
+  1.24.3:
+    date: '2023-03-09'
+    title: Versions
+    description: 'Versions update.'
   1.24.2:
     date: '2023-02-01'
     title: Versions
@@ -236,7 +240,7 @@ history:
 plugin:
   -
     name: form/form_v1
-    version: 1.57.3
+    version: 1.58.1
   -
     name: wf/array
     version: 1.2.4
