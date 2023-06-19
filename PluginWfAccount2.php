@@ -923,6 +923,9 @@ ABC;
     return array('data' => array());
   }
   private function cookie_forget($settings){
+    if(headers_sent()){
+      return null;
+    }
     /**
      * 
      */
@@ -936,6 +939,7 @@ ABC;
     }
     $cookie->del('wf_account2_2');
     $cookie->del('wf_account2_3');
+    return null;
   }
   private function cookie_remember($settings, $user){
     if(headers_sent()){

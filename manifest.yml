@@ -1,5 +1,9 @@
-version: 1.24.5
+version: 1.25.0
 history:
+  1.25.0:
+    date: '2023-06-16'
+    title: Cookie
+    description: 'Omit cookie handling in method cookie_forget if headers is sent.'
   1.24.5:
     date: '2023-05-29'
     title: Versions
