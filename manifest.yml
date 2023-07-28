@@ -1,5 +1,9 @@
-version: 1.25.0
+version: 1.25.1
 history:
+  1.25.1:
+    date: '2023-07-28'
+    title: Versions
+    description: 'Versions update.'
   1.25.0:
     date: '2023-06-16'
     title: Cookie
@@ -252,7 +256,7 @@ history:
 plugin:
   -
     name: form/form_v1
-    version: 1.59.0
+    version: 1.59.1
   -
     name: wf/array
     version: 1.2.4
@@ -261,7 +265,7 @@ plugin:
     version: 1.5.1
   -
     name: i18n/translate_v1
-    version: 1.11.0
+    version: 1.12.0
   -
     name: wf/mysql
     version: 1.15.0
