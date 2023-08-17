@@ -21,7 +21,7 @@ class PluginWfAccount2{
     $this->init_page();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'registration');
-    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
+    wfGlobals::setSys('layout_path', '/plugin/wf/account2/layout');
     /**
      * 
      */
@@ -89,7 +89,7 @@ class PluginWfAccount2{
     $this->init_page();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'signin');
-    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
+    wfGlobals::setSys('layout_path', '/plugin/wf/account2/layout');
     $page = new PluginWfYml(__DIR__.'/page/signin.yml');
     $form = $this->getFormSignin($settings);
     /**
@@ -192,7 +192,7 @@ class PluginWfAccount2{
     $this->init_page();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'change_email');
-    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
+    wfGlobals::setSys('layout_path', '/plugin/wf/account2/layout');
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/email.yml';
     $page = wfFilesystem::loadYml($filename);
     $form = new PluginWfYml('/plugin/wf/account2/form/email.yml');
@@ -211,7 +211,7 @@ class PluginWfAccount2{
     $this->init_page();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'change_username');
-    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
+    wfGlobals::setSys('layout_path', '/plugin/wf/account2/layout');
     $page = new PluginWfYml(__DIR__.'/page/username.yml');
     $form = new PluginWfYml('/plugin/wf/account2/form/username.yml');
     $form->set('url', '/'.wfArray::get($GLOBALS, 'sys/class').'/action');
@@ -664,7 +664,7 @@ class PluginWfAccount2{
      * To prevent sign in with encrypted password we has to remove the space limiter.
      */
     $match_plain = false;
-    $post_password = str_replace(' ', '_', $post_password);
+    $post_password = wfPhpfunc::str_replace(' ', '_', $post_password);
     if($post_password==$password){
       $match_plain = true;
     }
@@ -861,7 +861,7 @@ ABC;
     $this->init_page();
     $settings = new PluginWfArray(wfPlugin::getModuleSettings());
     $this->checkAllow($settings, 'change_password');
-    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
+    wfGlobals::setSys('layout_path', '/plugin/wf/account2/layout');
     $filename = wfArray::get($GLOBALS, 'sys/app_dir').'/plugin/wf/account2/page/password.yml';
     $page = wfFilesystem::loadYml($filename);
     $form = new PluginWfYml('/plugin/wf/account2/form/password.yml');
@@ -904,7 +904,7 @@ ABC;
     if(wfRequest::get('auto')){
       $page = wfArray::set($page, 'content/script/settings/disabled', false);
     }
-    wfArray::set($GLOBALS, 'sys/layout_path', '/plugin/wf/account2/layout');
+    wfGlobals::setSys('layout_path', '/plugin/wf/account2/layout');
     wfDocument::mergeLayout($page);
   }
   public function api_sign_out($settings){
@@ -1164,7 +1164,7 @@ ABC;
         if($settings->get('allow/signin_role/roles') && $users->get($user_id.'/roles')){
           foreach($settings->get('allow/signin_role/roles') as $v){
             $i = array_search($v, $users->get($user_id.'/roles'));
-            if(strlen($i)){
+            if(wfPhpfunc::strlen($i)){
               /**
                * Find a role match.
                */
@@ -1203,7 +1203,7 @@ ABC;
     throw new Exception(__CLASS__.' says: Could not generate new username in method get_username.');
   }
   private function generateRandomString($length = 10) {
-    return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyz', ceil($length/strlen($x)) )),1,$length);
+    return wfPhpfunc::substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyz', ceil($length/strlen($x)) )),1,$length);
   }
   private function username_exist($username){
     $exist = $this->runSQL($this->settings, "select id as checking from account where username='$username';");
