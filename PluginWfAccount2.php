@@ -127,6 +127,7 @@ class PluginWfAccount2{
       $result->set('role', $user->get('role'));
       $result->set('rights', $user->get('rights'));
       $result->set('theme_data/version', $user->get('theme_data/version'));
+      $result->set('theme_data/theme', wfGlobals::getTheme());
     }
     return array('data' => $result->get());
   }
@@ -172,6 +173,7 @@ class PluginWfAccount2{
       $result->set('role', $user->get('role'));
       $result->set('rights', $user->get('rights'));
       $result->set('theme_data/version', $user->get('theme_data/version'));
+      $result->set('theme_data/theme', wfGlobals::getTheme());
     }
     /**
      * 
@@ -1063,6 +1065,7 @@ ABC;
      */
     $theme_manifest = new PluginWfYml('/theme/[theme]/config/manifest.yml');
     wfUser::setSession('theme_data/version', $theme_manifest->get('version'));
+    wfUser::setSession('theme_data/theme', wfGlobals::getTheme());
     /**
      *
      */

@@ -1,5 +1,9 @@
-version: 1.26.0
+version: 1.26.1
 history:
+  1.26.1:
+    date: '2023-09-06'
+    title: 'Session param'
+    description: 'Add session param theme_data/theme.'
   1.26.0:
     date: '2023-08-17'
     title: 'PHP 8.2'
