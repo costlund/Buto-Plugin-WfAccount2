@@ -719,7 +719,7 @@ class PluginWfAccount2{
          * Check email.
          */
         if(!$signin_method || $signin_method=='email'){
-          if(strtolower($email)==strtolower(wfArray::get($value, 'email'))){
+          if(strtolower((string)$email)==strtolower((string)wfArray::get($value, 'email'))){
             $user_id = $key;
             break;
           }

@@ -1,5 +1,9 @@
-version: 1.26.1
+version: 1.26.2
 history:
+  1.26.2:
+    date: '2023-09-11'
+    title: 'PHP 8.2'
+    description: 'Changes according to PHP version 8.2.'
   1.26.1:
     date: '2023-09-06'
     title: 'Session param'
