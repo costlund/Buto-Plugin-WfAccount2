@@ -737,7 +737,7 @@ class PluginWfAccount2{
         /**
          * Activate always with email
          */
-        if(strtolower($email)==strtolower(wfArray::get($value, 'email'))){
+        if(strtolower((string)$email)==strtolower((string)wfArray::get($value, 'email'))){
           $user_id = $key;
           break;
         }

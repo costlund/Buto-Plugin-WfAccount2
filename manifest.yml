@@ -1,5 +1,9 @@
-version: 1.26.3
+version: 1.26.4
 history:
+  1.26.4:
+    date: '2023-11-05'
+    title: 'PHP version 8.2'
+    description: 'Changes according to PHP version 8.2.'
   1.26.3:
     date: '2023-09-11'
     title: Versions
