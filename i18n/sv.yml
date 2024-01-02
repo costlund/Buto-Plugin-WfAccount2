@@ -21,3 +21,4 @@ i18n_password_info: 'Lösenord måste ha minst en stor bokstav, liten bokstav, n
 'You are already signed in!': 'Ni är redan inloggad!'
 Show password: Visa lösenord
 New passwords does not match!: Nya lösenord matchar inte!
+Password was updated!: Lösenordet ändrades!

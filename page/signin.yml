@@ -3,9 +3,6 @@ settings:
     -
       key: 'sys/settings/form_lable'
       value: Sign in
-    -
-      key: 'sys/settings/plugin/wf/form/enabled'
-      value: true
   layout:
     - html
     - main

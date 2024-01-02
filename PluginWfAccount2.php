@@ -605,7 +605,7 @@ class PluginWfAccount2{
       $change_email_email = $user->get('change_email_email');
       $form->set('items/key/mandatory', true);
       $validator = new PluginWfArray();
-      $validator->set('plugin', 'wf/form');
+      $validator->set('plugin', 'wf/form_v2');
       $validator->set('method', 'validate_equal');
       $validator->set('data/value', $change_email_key);
       $form->set('items/key/validator/', $validator->get());
@@ -641,7 +641,7 @@ class PluginWfAccount2{
         if($settings->get('on_signin/script')){
           $json->set('script', array($settings->get('on_signin/script')));
         }else{
-          $json->set('script', array("location.href='/';"));
+          $json->set('script', array("alert('".$i18n->translateFromTheme('Password was updated!')."');location.href='/';"));
         }
         $sql = "update account set password='".wfCrypt::getHashAndSaltAsString( $form->get('items/new_password/post_value'))."' where id='".wfArray::get($_SESSION, 'user_id')."';";
         $this->runSQL($settings, $sql);
