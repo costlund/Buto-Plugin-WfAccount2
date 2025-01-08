@@ -1,5 +1,9 @@
-version: 1.27.0
+version: 1.28.0
 history:
+  1.28.0:
+    date: '2024-12-18'
+    title: 'Mail params'
+    description: 'Set FromName to application/title if set. Set Subject from session if set.'
   1.27.0:
     date: '2024-01-02'
     title: 'Change email'

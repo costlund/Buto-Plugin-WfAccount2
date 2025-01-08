@@ -360,6 +360,7 @@ class PluginWfAccount2{
         $Body = $i18n->translateFromTheme('Key to activate account is:').' '.$activate_key.'<br>';
         $Body .= $i18n->translateFromTheme('Your user name is:').' '.$user->get('username').'<br>';
         $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $Body);
+        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Subject', 'Activate account');
       }
     }elseif($action=='activate'){
       $this->checkAllow($settings, 'registration');
@@ -827,6 +828,16 @@ ABC;
       }
       $phpmailer_settings = wfSettings::getSettingsFromYmlString($phpmailer_settings);
       $phpmailer_settings = new PluginWfArray($phpmailer_settings);
+      /**
+       * 
+       */
+      if(wfGlobals::get('settings/application/title')){
+        $phpmailer_settings->set('FromName', wfGlobals::get('settings/application/title'));
+      }
+      $phpmailer_settings->set('Subject', 'Change email');
+      if(wfArray::get($_SESSION, 'plugin/wf/account/send_email/Subject')){
+        $phpmailer_settings->set('Subject', wfArray::get($_SESSION, 'plugin/wf/account/send_email/Subject'));
+      }
       $phpmailer_settings->set('To', wfArray::get($_SESSION, 'plugin/wf/account/send_email/To'));
       $phpmailer_settings->set('Body', wfArray::get($_SESSION, 'plugin/wf/account/send_email/Body'));
       wfPlugin::includeonce('wf/phpmailer');

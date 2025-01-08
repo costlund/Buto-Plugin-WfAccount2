@@ -17,12 +17,17 @@ content:
           class: 'form-group'
           id: wf_account_current_email
         innerHTML:
-          lable:
-            type: label
-            innerHTML: Current email
-          email:
-            type: div
-            innerHTML: 'globals:_SESSION/email'
+          -
+            type: p
+            innerHTML:
+              - 
+                type: strong
+                attribute:
+                  class: content-colon
+                innerHTML: Current email
+              - 
+                type: span
+                innerHTML: 'globals:_SESSION/email'
       frm_login:
         type: widget
         data:

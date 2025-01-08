@@ -9,16 +9,14 @@ url: _set_in_action_
 ajax: true
 submit_value: Change
 id: frm_account
+autocomplete: off
 items:
   new_email:
     type: varchar
     label: New email
     mandatory: true
     default: ''
-    validator:
-      -
-        plugin: form/form_v1
-        method: validate_email
+    placeholder: '@'
   password:
     type: password
     label: Password
