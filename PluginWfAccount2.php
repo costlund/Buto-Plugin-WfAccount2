@@ -414,18 +414,22 @@ class PluginWfAccount2{
       $form->set(null, $f->data);
       if(!$form->get('is_valid')){
         $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '". $f->getErrors() ."');"));
+        $json->set('errors', $f->getErrors());
       }else{
         $user_id = $this->getUserId($users->get(), $form->get('items/email/post_value'));
         if(!$user_id){
           $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Username or password does not match!')."');"));
+          $json->set('errors', $i18n->translateFromTheme('Username or password does not match!'));
         }else{
           if($this->validatePassword($users->get($user_id.'/password'), $form->get('items/password/post_value'))){
             $users->set("$user_id/roles", $this->get_roles($user_id, $settings));
             $users->set("$user_id/signin_role", $this->get_signin_role($users, $user_id, $settings));
             if(!$users->get($user_id.'/activated')){
               $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('User is not activated!')."');"));
+              $json->set('errors', $i18n->translateFromTheme('User is not activated!'));
             }elseif($users->get($user_id.'/signin_role')){
               $json->set('script', array("alert('".$i18n->translateFromTheme('You are not able to sign in due to role restriction.')."');"));
+              $json->set('errors', $i18n->translateFromTheme('You are not able to sign in due to role restriction.'));
             }else{
               if(!$settings->get('allow/two_factor_authentication')){
                 /**
@@ -501,6 +505,7 @@ class PluginWfAccount2{
             }
           }else{
             $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('Username or password does not match!')."');"));
+            $json->set('errors', $i18n->translateFromTheme('Username or password does not match!'));
           }
         }
       }
