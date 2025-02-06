@@ -1038,6 +1038,9 @@ ABC;
     if(!$settings->get('allow/remember')){
       return null;
     }
+    if(!$settings->get('allow/signin')){
+      return null;
+    }
     /**
      * 
      */
