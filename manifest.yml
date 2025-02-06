@@ -1,5 +1,9 @@
-version: 1.28.1
+version: 1.28.2
 history:
+  1.28.2:
+    date: '2025-02-06'
+    title: 'Auto sign in'
+    description: 'Handle if param allow/signin_role is set. Add optional param allow/signin_role/message.'
   1.28.1:
     date: '2025-01-27'
     title: 'Errors'

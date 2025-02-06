@@ -62,7 +62,8 @@ In this example only user with role webmaster can sign in between 2021-12-01 and
             - webmaster
           date:
             from: '2021-12-01'
-            to: '2021-12-31'</code></pre>
+            to: '2021-12-31'
+          message: 'Custom optional alert message!'</code></pre>
 <p>Auto sign in.</p>
 <ul>
 <li>To activate auto sign in set remember param along with signin event.</li>

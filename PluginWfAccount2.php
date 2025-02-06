@@ -428,8 +428,20 @@ class PluginWfAccount2{
               $json->set('script', array("PluginWfAccount2.saveForm('frm_account_save', '".$i18n->translateFromTheme('User is not activated!')."');"));
               $json->set('errors', $i18n->translateFromTheme('User is not activated!'));
             }elseif($users->get($user_id.'/signin_role')){
-              $json->set('script', array("alert('".$i18n->translateFromTheme('You are not able to sign in due to role restriction.')."');"));
-              $json->set('errors', $i18n->translateFromTheme('You are not able to sign in due to role restriction.'));
+              /**
+               * message
+               */
+              $message = null;
+              if($settings->get('allow/signin_role/message')){
+                $message = $settings->get('allow/signin_role/message');
+              }else{
+                $message = $i18n->translateFromTheme('You are not able to sign in due to role restriction.');
+              }
+              /**
+               * 
+               */
+              $json->set('script', array("alert('".$message."');"));
+              $json->set('errors', $message);
             }else{
               if(!$settings->get('allow/two_factor_authentication')){
                 /**
@@ -1038,6 +1050,14 @@ ABC;
     $user_id = $this->getUserId($users->get(), $_COOKIE['wf_account2_1']);
     if(!$user_id){
       $cookie->set('wf_account2_3', '1');
+      return null;
+    }
+    /**
+     * signin_role
+     */
+    $users->set("$user_id/roles", $this->get_roles($user_id, $settings));
+    $users->set("$user_id/signin_role", $this->get_signin_role($users, $user_id, $settings));
+    if($users->get("$user_id/signin_role")){
       return null;
     }
     /**

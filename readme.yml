@@ -66,6 +66,7 @@ readme:
                   date:
                     from: '2021-12-01'
                     to: '2021-12-31'
+                  message: 'Custom optional alert message!'
         ```
 
         Auto sign in.
