@@ -661,8 +661,9 @@ class PluginWfAccount2{
         }else{
           $json->set('script', array("alert('".$i18n->translateFromTheme('Password was updated!')."');location.href='/';"));
         }
-        $sql = "update account set password='".wfCrypt::getHashAndSaltAsString( $form->get('items/new_password/post_value'))."' where id='".wfArray::get($_SESSION, 'user_id')."';";
+        $sql = "update account set password='".wfCrypt::getHashAndSaltAsString( $form->get('items/new_password/post_value'))."', password_updated_at=now() where id='".wfArray::get($_SESSION, 'user_id')."';";
         $this->runSQL($settings, $sql);
+        wfUser::setSession('plugin/wf/account2/user/password_crypted', true);
         $this->log('password');
       }
     }
@@ -783,13 +784,20 @@ class PluginWfAccount2{
         a.phone, 
         a.username,
         a.language 
+        ,a.fullname
+        ,a.pid
+        ,a.password_updated_at
+        ,a.created_at
+        ,a.updated_at
+        ,a.created_by
+        ,a.updated_by
         from account as a
         inner join $table as f on a.id=f.$join
         ;
 ABC;
               
     }else{
-      $sql = "select id, email, password, activated, phone, username, language from account;";
+      $sql = "select id, email, password, activated, phone, username, language, fullname, pid, password_updated_at, created_at, updated_at, created_by, updated_by from account;";
     }
     $rs = $mysql->runSql($sql);
     return new PluginWfArray($rs['data']);
@@ -1099,6 +1107,16 @@ ABC;
     if($user->get('language')){
       $_SESSION['i18n']['language'] = $user->get('language');
     }
+    /**
+     * session
+     * plugin/wf/account2/user
+     */
+    $user->set('password_crypted', false);
+    if(strstr($user->get('password'), ' ')){
+      $user->set('password_crypted', true);
+    }
+    $user->set('password', '****');
+    wfUser::setSession('plugin/wf/account2/user', $user->get());
     /**
      * theme_data/version
      */

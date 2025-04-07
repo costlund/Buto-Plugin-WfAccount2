@@ -41,6 +41,8 @@ tables:
         type: varchar(255)
       pid:
         type: varchar(255)
+      password_updated_at:
+        type: timestamp
   account_log:
     _description: 'Account log.'
     field:

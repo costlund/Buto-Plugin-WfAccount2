@@ -1,5 +1,13 @@
-version: 1.28.2
+version: 1.28.4
 history:
+  1.28.4:
+    date: '2025-03-30'
+    title: 'Password'
+    description: 'Add field db.password_updated_at to schema.'
+  1.28.3:
+    date: '2025-03-30'
+    title: 'Session'
+    description: 'Add data to session param plugin/wf/account2/user when sign in.'
   1.28.2:
     date: '2025-02-06'
     title: 'Auto sign in'
