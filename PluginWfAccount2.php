@@ -1112,7 +1112,7 @@ ABC;
      * plugin/wf/account2/user
      */
     $user->set('password_crypted', false);
-    if(strstr($user->get('password'), ' ')){
+    if(strstr((string)$user->get('password'), ' ')){
       $user->set('password_crypted', true);
     }
     $user->set('password', '****');

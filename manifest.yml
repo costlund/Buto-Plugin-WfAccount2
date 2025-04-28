@@ -1,5 +1,9 @@
-version: 1.28.4
+version: 1.28.5
 history:
+  1.28.5:
+    date: '2025-04-28'
+    title: 'Password'
+    description: 'Handle if password is null in db on sign in.'
   1.28.4:
     date: '2025-03-30'
     title: 'Password'
