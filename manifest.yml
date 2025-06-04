@@ -1,5 +1,9 @@
-version: 1.28.5
+version: 1.29.0
 history:
+  1.29.0:
+    date: '2025-06-04'
+    title: 'Schema'
+    description: 'Add account.postalcode to schema.'
   1.28.5:
     date: '2025-04-28'
     title: 'Password'

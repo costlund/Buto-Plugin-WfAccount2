@@ -43,6 +43,8 @@ tables:
         type: varchar(255)
       password_updated_at:
         type: timestamp
+      postalcode:
+        type: varchar(20)
   account_log:
     _description: 'Account log.'
     field:
