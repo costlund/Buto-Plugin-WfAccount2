@@ -1,5 +1,9 @@
-version: 1.29.0
+version: 1.30.0
 history:
+  1.30.0:
+    date: '2025-09-18'
+    title: 'SMS'
+    description: 'Migrate to new version.'
   1.29.0:
     date: '2025-06-04'
     title: 'Schema'
@@ -324,6 +328,9 @@ plugin:
   -
     name: sms/pixie_v1
     version: 1.7.0
+  -
+    name: sms/pixie_v2
+    version: 1.0.0
   -
     name: twitter/bootstrap335v
     version: 1.0.1
