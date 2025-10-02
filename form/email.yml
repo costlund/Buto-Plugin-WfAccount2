@@ -24,7 +24,7 @@ items:
     default: 
   key:
     type: varchar
-    label: 'Key*'
+    label: 'Key'
     mandatory: false
     default: ''
     container_style: 'display:none;'

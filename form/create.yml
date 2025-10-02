@@ -32,7 +32,7 @@ items:
       text: 'Password must have at lest one uppercase, lowercase, number and a minimum length of 8!'
   key:
     type: varchar
-    label: 'Key*'
+    label: 'Key'
     mandatory: false
     default: ''
     container_style: 'display:none;'

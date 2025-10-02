@@ -501,15 +501,15 @@ class PluginWfAccount2{
                      */
                     if($form->get('items/two_factor_authentication/post_value')=='email'){
                       $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $users->get($user_id.'/email'));
-                      $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $i18n->translateFromTheme('Key to sign in is:').' '.$get_key);
+                      $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $i18n->translateFromTheme('Key to sign in is').': '.$get_key);
                       $this->log('two_factor_authentication_email', $user_id);
                     }elseif($form->get('items/two_factor_authentication/post_value')=='phone'){
                       $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_sms/To',   $users->get($user_id.'/phone'));
-                      $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_sms/Body', $i18n->translateFromTheme('Key to sign in is:').' '.$get_key);
+                      $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_sms/Body', $i18n->translateFromTheme('Key to sign in is').': '.$get_key);
                       $this->log('two_factor_authentication_phone', $user_id);
                     }
                   }
-                  $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "'.$i18n->translateFromTheme('An authentication key sent to you!').'", true);');
+                  $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "", true);');
                   if(wfHelp::isLocalhost()){
                     /**
                      * Set key filed direct if on developer machine.
@@ -603,7 +603,7 @@ class PluginWfAccount2{
           $json->set('success', true);
           $json->set('script', $script->get());
           $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $form->get('items/new_email/post_value'));
-          $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', 'Key to activate new email is: '.$get_key);
+          $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $i18n->translateFromTheme('Key to activate new email is').': '.$get_key);
           $this->log('email');
         }
       }
@@ -866,7 +866,7 @@ ABC;
       if(wfGlobals::get('settings/application/title')){
         $phpmailer_settings->set('FromName', wfGlobals::get('settings/application/title'));
       }
-      $phpmailer_settings->set('Subject', 'Change email');
+      $phpmailer_settings->set('Subject', $this->i18n->translateFromTheme('Key'));
       if(wfArray::get($_SESSION, 'plugin/wf/account/send_email/Subject')){
         $phpmailer_settings->set('Subject', wfArray::get($_SESSION, 'plugin/wf/account/send_email/Subject'));
       }
@@ -879,6 +879,7 @@ ABC;
       $_SESSION = wfArray::setUnset($_SESSION, 'plugin/wf/account/send_email');
       $json->set('success', $result->get('success'));
       $json->set('alert', $result->get('alert'));
+      $json->set('script/0', "PluginBootstrapToast.toast({id: 'toast_1', header: '". $this->i18n->translateFromTheme('Sending key') ."', body: '". $this->i18n->translateFromTheme('An authentication key sent to you!') ."'});");
     }elseif(wfArray::get($_SESSION, 'plugin/wf/account/send_sms/To') && wfArray::get($_SESSION, 'plugin/wf/account/send_sms/Body')){
       /**
        * SMS
@@ -910,7 +911,7 @@ ABC;
         wfPlugin::includeonce('sms/pixie_v2');
         $send = PluginSmsPixie_v2::send($data);
         if(!$send->get('response/rejected')){
-          $json->set('script/0', "alert('". $this->i18n->translateFromTheme('An authentication key sent to you!') ."');");
+          $json->set('script/0', "PluginBootstrapToast.toast({id: 'toast_1', header: '". $this->i18n->translateFromTheme('Sending key') ."', body: '". $this->i18n->translateFromTheme('An authentication key sent to you!') ."'});");
         }else{
           $json->set('script/0', "alert('". $this->i18n->translateFromTheme('Could not send SMS because an error!') ."');");
         }
@@ -944,6 +945,7 @@ ABC;
      * 
      */
     $page = wfArray::set($page, 'content/login_form/innerHTML/frm_login/data/data', $form->get());
+    wfGlobals::set('settings/form_lable', $this->i18n->translateFromTheme('Change password'));
     wfDocument::mergeLayout($page);
   }
   /**
