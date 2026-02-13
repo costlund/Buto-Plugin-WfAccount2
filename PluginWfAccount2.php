@@ -364,10 +364,23 @@ class PluginWfAccount2{
         $json->set('script', $script->get());
         // Set params to send mail via page_sendmessage().
         $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $form->get('items/email/post_value'));
-        $Body = $i18n->translateFromTheme('Key to activate account is:').' '.$activate_key.'<br>';
-        $Body .= $i18n->translateFromTheme('Your user name is:').' '.$user->get('username').'<br>';
+        /**
+         * element
+         */
+        $element = wfDocument::getElementFromFolder(__DIR__, 'action_create');
+        $element->setByTag(array('activate_key' => $activate_key));
+        $element->setByTag($user->get());
+        /**
+         * Body
+         */
+        wfDocument::$capture = 2;
+        wfDocument::renderElement($element);
+        $Body = wfDocument::getContent();
+        /**
+         * 
+         */
         $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $Body);
-        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Subject', 'Activate account');
+        $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Subject', $i18n->translateFromTheme('Account activation'));
       }
     }elseif($action=='activate'){
       $this->checkAllow($settings, 'registration');
@@ -602,8 +615,22 @@ class PluginWfAccount2{
           $script->set(true, 'PluginWfAccount2.saveForm("frm_account_save", "'.$i18n->translateFromTheme('Check your email for the key!').'", true);');
           $json->set('success', true);
           $json->set('script', $script->get());
+          /**
+           * element
+           */
+          $element = wfDocument::getElementFromFolder(__DIR__, 'action_email');
+          $element->setByTag(array('activate_key' => $get_key));
+          $element->setByTag(wfUser::getSession()->get());
+          //wfHelp::print($element, 1);
+          /**
+           * Body
+           */
+          wfDocument::$capture = 2;
+          wfDocument::renderElement($element);
+          $Body = wfDocument::getContent();
+          $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Subject', $i18n->translateFromTheme('Email change'));
           $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/To',   $form->get('items/new_email/post_value'));
-          $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $i18n->translateFromTheme('Key to activate new email is').': '.$get_key);
+          $_SESSION = wfArray::set($_SESSION, 'plugin/wf/account/send_email/Body', $Body);
           $this->log('email');
         }
       }

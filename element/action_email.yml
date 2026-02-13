@@ -1,0 +1,32 @@
+-
+  type: div
+  settings:
+    globals:
+      -
+        path_to_key: 'settings/plugin/i18n/translate_v1/settings/path'
+        value: '/plugin/wf/account2/i18n'
+  innerHTML: 
+    -
+      type: p
+      innerHTML: 
+        -
+          type: span
+          innerHTML: Email change for user
+        -
+          type: span
+          innerHTML: rs:username
+        -
+          type: span
+          innerHTML: .
+    -
+      type: ul
+      innerHTML:
+        -
+          type: li
+          innerHTML:
+            -
+              type: strong
+              innerHTML: 'Activation key:'
+            -
+              type: span
+              innerHTML: rs:activate_key
