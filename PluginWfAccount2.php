@@ -1191,7 +1191,15 @@ ABC;
    * @param type $account_id
    */
   public function sign_in_external($account_id, $log_tag = null){
-    unset($_SESSION['plugin']);
+    /**
+     * Why 260504?
+     */
+    if(false){
+      unset($_SESSION['plugin']);
+    }
+    /**
+     * 
+     */
     $settings = new PluginWfArray(wfPlugin::getModuleSettings('wf/account2'));
     $users = $this->getUsers($settings);
     $this->sign_in($account_id, $users->get(), $settings);
