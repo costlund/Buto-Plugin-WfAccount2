@@ -911,38 +911,28 @@ ABC;
       /**
        * SMS
        */
-      if(false){
-        /**
-         * Old version to be removed, 250918.
-         */
-        $sms = new PluginWfArray(wfArray::get($_SESSION, 'plugin/wf/account/send_sms'));
-        wfPlugin::includeonce('sms/pixie_v1');
-        $default = new PluginWfArray();
-        $default->set('account', $settings->get('sms_pixie/account'));
-        $default->set('sender', $settings->get('sms_pixie/sender'));
-        $default->set('pwd', $settings->get('sms_pixie/pwd'));
-        $default->set('to', $sms->get('To'));
-        $default->set('message', $sms->get('Body'));
-        $str = PluginSmsPixie_v1::send($default);
-        $json->set('success', true);
+      $sms_pixie_settings = $settings->get('sms_pixie');
+      $sms_pixie_settings = wfSettings::getSettingsFromYmlString($sms_pixie_settings);
+      $sms_pixie_settings = new PluginWfArray($sms_pixie_settings);
+      /**
+       * 
+       */
+      $sms = new PluginWfArray(wfArray::get($_SESSION, 'plugin/wf/account/send_sms'));
+      $data = new PluginWfArray();
+      $data->set('sender', $sms_pixie_settings->get('sender'));
+      $data->set('token', $sms_pixie_settings->get('token'));
+      $data->set('to', $sms->get('To'));
+      $data->set('message', $sms->get('Body'));
+      wfPlugin::includeonce('sms/pixie_v2');
+      $send = PluginSmsPixie_v2::send($data);
+      if(!$send->get('response/rejected')){
+        $json->set('script/0', "PluginBootstrapToast.toast({id: 'toast_1', header: '". $this->i18n->translateFromTheme('Sending key') ."', body: '". $this->i18n->translateFromTheme('An authentication key sent to you!') ."'});");
       }else{
-        /**
-         * 
-         */
-        $sms = new PluginWfArray(wfArray::get($_SESSION, 'plugin/wf/account/send_sms'));
-        $data = new PluginWfArray();
-        $data->set('sender', $settings->get('sms_pixie/sender'));
-        $data->set('token', $settings->get('sms_pixie/token'));
-        $data->set('to', $sms->get('To'));
-        $data->set('message', $sms->get('Body'));
-        wfPlugin::includeonce('sms/pixie_v2');
-        $send = PluginSmsPixie_v2::send($data);
-        if(!$send->get('response/rejected')){
-          $json->set('script/0', "PluginBootstrapToast.toast({id: 'toast_1', header: '". $this->i18n->translateFromTheme('Sending key') ."', body: '". $this->i18n->translateFromTheme('An authentication key sent to you!') ."'});");
-        }else{
-          $json->set('script/0', "alert('". $this->i18n->translateFromTheme('Could not send SMS because an error!') ."');");
-        }
+        $json->set('script/0', "alert('". $this->i18n->translateFromTheme('Could not send SMS because an error!') ."');");
       }
+      /**
+       * 
+       */
       $_SESSION = wfArray::setUnset($_SESSION, 'plugin/wf/account/send_sms');
     }else{
       $json->set('script/0', "alert('There was a problem to send email!');");

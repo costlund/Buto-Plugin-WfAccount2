@@ -1,5 +1,9 @@
-version: 1.31.1
+version: 1.32.0
 history:
+  1.32.0:
+    date: '2026-06-29'
+    title: 'SMS'
+    description: 'Allow settings with yml path.'
   1.31.1:
     date: '2026-05-04'
     title: 'Session'

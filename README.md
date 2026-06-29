@@ -6,6 +6,8 @@
 
 ## Settings
 
+
+
 <pre><code>plugin_modules:
   account:
     plugin: 'wf/account2'
@@ -86,6 +88,8 @@ In this example only user with role webmaster can sign in between 2021-12-01 and
 
 ## Schema
 
+
+
 <pre><code>/plugin/wf/account2/mysql/schema.yml</code></pre>
 
 <a name="key_2"></a>
@@ -94,9 +98,13 @@ In this example only user with role webmaster can sign in between 2021-12-01 and
 
 
 
+
+
 <a name="key_2_0"></a>
 
 ### sign_in_external
+
+
 
 <pre><code>wfPlugin::includeonce('wf/account2');
 $obj = new PluginWfAccount2();
@@ -106,6 +114,8 @@ $obj-&gt;sign_in_external('_a_account_id_', '_optional_log_tag_');</code></pre>
 
 ## Links
 
+
+
 <pre><code>/account/signin
 /account/signout
 /account/create</code></pre>
@@ -114,12 +124,16 @@ $obj-&gt;sign_in_external('_a_account_id_', '_optional_log_tag_');</code></pre>
 
 ## Data
 
+
+
 <p>SQL to create a webmaster account.</p>
 <pre><code>/mysql/account_insert_webmaster.sql</code></pre>
 
 <a name="key_5"></a>
 
 ## Session
+
+
 
 <pre><code>secure: true
 email: _
